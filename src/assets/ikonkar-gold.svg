@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE8A3" />
+      <stop offset="30%" stop-color="#E5B94C" />
+      <stop offset="60%" stop-color="#CA9727" />
+      <stop offset="85%" stop-color="#FCE196" />
+      <stop offset="100%" stop-color="#9C6F12" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFF5D6" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#D4AF37" stop-opacity="0.2" />
+    </linearGradient>
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.45" />
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#E5B94C" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Sacred ੴ Ik Onkar Calligraphy Symbol -->
+  <g filter="url(#goldGlow)">
+    <text 
+      x="100" 
+      y="142" 
+      text-anchor="middle" 
+      fill="url(#goldGrad)" 
+      stroke="#7A530B" 
+      stroke-width="1.5" 
+      font-family="'Noto Sans Gurmukhi', 'Gurmukhi MN', 'Mukta Mahee', 'Arial Unicode MS', serif" 
+      font-size="130" 
+      font-weight="bold"
+      letter-spacing="1"
+    >ੴ</text>
+  </g>
+</svg>
