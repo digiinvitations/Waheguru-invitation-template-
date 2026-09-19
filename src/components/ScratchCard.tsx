@@ -183,36 +183,39 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
 
         {/* The Mask Container ensures both the scratch layer and the content underneath are perfect hearts */}
         <div 
-          className="relative mt-8 mb-6 w-[340px] h-[340px] max-w-[94vw] aspect-square" 
+          className="relative mt-8 mb-6 w-[340px] h-[340px] max-w-[92vw] aspect-square" 
           ref={containerRef}
           style={heartMaskStyle}
         >
-          {/* Revealed Content (underneath) - perfectly framed in the wide upper-middle region */}
-          <div className="absolute inset-0 flex flex-col items-center justify-start text-center pt-[18%] sm:pt-[19%] px-6 bg-[#F4DDE2] h-full select-none">
+          {/* Base background of the revealed heart */}
+          <div className="absolute inset-0 bg-[#F4DDE2]" />
+
+          {/* Safe zone container: situated between 23% and 72% height, safely clear of top cleft and bottom taper */}
+          <div className="absolute inset-x-0 top-[23%] bottom-[27%] flex flex-col items-center justify-center text-center px-4 select-none">
             {/* Sacred Ek Onkar Logo */}
-            <span className="text-2xl sm:text-3xl text-[#8F1736] font-serif font-bold mb-1 leading-none drop-shadow-2xs">
+            <span className="text-2xl sm:text-[28px] text-[#8F1736] font-serif font-bold leading-none mb-1 drop-shadow-2xs">
               ੴ
             </span>
 
             {/* Ceremony Tag */}
-            <p className="font-serif text-[11px] sm:text-xs uppercase tracking-[0.24em] text-[#8F1736] font-bold mt-0.5">
+            <p className="font-serif text-[11px] sm:text-xs uppercase tracking-[0.24em] text-[#8F1736] font-bold">
               Anand Karaj
             </p>
 
             {/* Wedding Date */}
-            <p className="font-serif font-bold text-2xl sm:text-3xl text-[#8F1736] tracking-wide mt-2 leading-tight">
+            <p className="font-serif font-bold text-xl sm:text-2xl text-[#8F1736] tracking-wide my-1 leading-tight">
               {data.weddingDateFormatted}
             </p>
 
             {/* Day & Auspicious Time */}
-            <p className="font-serif text-xs sm:text-sm text-[#8F1736]/95 font-medium mt-1">
+            <p className="font-serif text-xs sm:text-[13px] text-[#8F1736]/90 font-medium leading-tight">
               {data.weddingDayFormatted} • {data.weddingTimeFormatted}
             </p>
 
             {/* Subtle Ornamental Divider */}
-            <div className="flex items-center justify-center gap-2 mt-2.5 w-28 opacity-75">
+            <div className="flex items-center justify-center gap-2 mt-1.5 w-24 opacity-70">
               <div className="h-[1px] flex-1 bg-[#D9A6B2]"></div>
-              <Heart className="w-2.5 h-2.5 text-[#8F1736] fill-[#8F1736]" />
+              <Heart className="w-2 h-2 text-[#8F1736] fill-[#8F1736]" />
               <div className="h-[1px] flex-1 bg-[#D9A6B2]"></div>
             </div>
           </div>
