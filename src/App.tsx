@@ -76,7 +76,7 @@ function PublicView() {
       {/* Main Content */}
       <main className="w-full min-h-[100svh] bg-blush-main relative overflow-hidden">
         <Hero data={data} shouldPlayVideo={viewState === 'main' && !isPreloading} onVideoEnd={() => setIsHeroEnded(true)} />
-        <InvitationMessage message={data.invitationMessage} isHeroEnded={isHeroEnded} invitedBy={data.invitedBy} />
+        <InvitationMessage message={data.invitationMessage} isHeroEnded={isHeroEnded} />
         <ScratchCardSection data={data} onReveal={() => setIsScratched(true)} />
         {isScratched && <Countdown targetDate={data.weddingDate} />}
         <Events events={data.events} />

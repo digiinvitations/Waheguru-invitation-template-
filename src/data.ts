@@ -1,15 +1,15 @@
 import { WeddingData } from "./types";
 
 export const weddingData: WeddingData = {
-  groom: {
-    name: "Jaspreet Singh",
-    parents: "Son of Sd. Kuldeep Singh & Sdn. Ravinder Kaur",
-    education: "",
-    profession: "",
-  },
   bride: {
     name: "Jasmeet Kaur",
     parents: "Daughter of Sd. Paramjeet Singh & Sdn. Rupinder Kaur",
+    education: "",
+    profession: "",
+  },
+  groom: {
+    name: "Jaspreet Singh",
+    parents: "Son of Sd. Kuldeep Singh & Sdn. Ravinder Kaur",
     education: "",
     profession: "",
   },
@@ -24,7 +24,7 @@ export const weddingData: WeddingData = {
   heroLogoUrl: "/ikonkar-gold.svg",
   ogImageUrl: "https://i.ibb.co/whJhPT35/file-000000001e048211bb05770afd02bdae.png",
   heroMessage: "With the divine blessings of Sri Guru Granth Sahib Ji & Waheguru Ji\nwe cordially invite you to celebrate the Anand Karaj of",
-  invitationMessage: "With the heavenly blessings of Sri Guru Granth Sahib Ji, our respected elders, and Waheguru Ji, we are honored to invite you to celebrate the holy Anand Karaj and wedding festivities of Jaspreet & Jasmeet as they begin their sacred journey together in faith, love, and devotion.\n\nWe humbly request your gracious presence and blessings on this auspicious occasion.",
+  invitationMessage: "With the heavenly blessings of Sri Guru Granth Sahib Ji, our respected elders, and Waheguru Ji, we are honored to invite you to celebrate the holy Anand Karaj and wedding festivities of Jasmeet & Jaspreet as they begin their sacred journey together in faith, love, and devotion.\n\nWe humbly request your gracious presence and blessings on this auspicious occasion.",
   invitedBy: "Grandmother Sdn. Jasmer Kaur",
   familyRegards: "Gandhi Family",
   rsvpAddress: "Gandhi Cloth House, Jhajharia Market, General Ganj, Kanpur",

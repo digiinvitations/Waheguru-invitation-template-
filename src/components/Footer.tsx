@@ -19,7 +19,7 @@ export function Footer({ data }: FooterProps) {
       </div>
 
       <h5 className="font-script text-2xl text-wine-dark mb-3">
-        {data.groom.name} &amp; {data.bride.name}
+        {data.bride.name} &amp; {data.groom.name}
       </h5>
       
       <div className="flex items-center gap-2 opacity-60 mb-8">

@@ -1,9 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { HeartDivider } from "./HeartDivider";
 import { generateIcsFile } from "../utils";
 import { WeddingData } from "../types";
-import { Calendar, Heart } from "lucide-react";
+import { Calendar, Heart, MapPin } from "lucide-react";
 import confetti from "canvas-confetti";
 
 interface ScratchCardProps {
@@ -29,6 +28,9 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
 
+  const venueName = data.venue?.name || "Gurudwara Shri Guru Singh Sabha";
+  const venueAddress = [data.venue?.addressLine1, data.venue?.addressLine2].filter(Boolean).join(", ");
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -37,9 +39,9 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
     if (!ctx) return;
     setContext(ctx);
 
-    // Setup canvas size (made slightly larger as requested)
-    const width = 320;
-    const height = 320;
+    // Setup canvas size matching the heart dimensions
+    const width = 340;
+    const height = 340;
     canvas.width = width;
     canvas.height = height;
 
@@ -49,7 +51,7 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
   const drawScratchLayer = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
     ctx.clearRect(0, 0, width, height);
 
-    // Fill entire canvas with rich pink/burgundy gradient - the CSS mask will clip it into a perfect heart
+    // Fill canvas with rich pink/burgundy gradient - the CSS mask clips it into a heart
     const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, "#E5A9B8"); // Rich dusty blush
     gradient.addColorStop(0.4, "#C9788D"); // Muted dusty rose
@@ -57,8 +59,8 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
-    // Add fine sparkling glitter effect across the entire heart uniformly
-    for (let i = 0; i < 15000; i++) {
+    // Add fine sparkling glitter effect across the heart uniformly
+    for (let i = 0; i < 16000; i++) {
       const rx = Math.random() * width;
       const ry = Math.random() * height;
       ctx.fillStyle = Math.random() > 0.5 ? "rgba(255, 255, 255, 0.95)" : "rgba(244, 221, 226, 0.85)";
@@ -66,7 +68,7 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
     }
     
     // Add slightly larger distinct sparkles
-    for (let i = 0; i < 300; i++) {
+    for (let i = 0; i < 350; i++) {
       const rx = Math.random() * width;
       const ry = Math.random() * height;
       ctx.fillStyle = "rgba(255, 255, 255, 1)";
@@ -74,6 +76,15 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
       ctx.arc(rx, ry, Math.random() * 1.5 + 0.5, 0, Math.PI * 2);
       ctx.fill();
     }
+
+    // Shimmering scratch prompt on unrevealed heart surface
+    ctx.save();
+    ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+    ctx.font = "bold 13px serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("✨ Scratch Here ✨", width / 2, height / 2 + 10);
+    ctx.restore();
   };
 
   const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
@@ -102,12 +113,14 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
 
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
-    context.arc(x, y, 28, 0, Math.PI * 2); // slightly larger brush for the larger heart
+    context.arc(x, y, 28, 0, Math.PI * 2);
     context.fill();
   };
 
@@ -126,11 +139,9 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
     }
     
     const totalPixelsChecked = pixels.length / 16;
-    // The mask covers ~50% of the canvas area.
-    // If ~25% of the total canvas is scratched, that's half the heart.
     const scratchedPercentage = transparentCount / totalPixelsChecked;
 
-    if (scratchedPercentage > 0.25) {
+    if (scratchedPercentage > 0.22) {
       // Clear entire canvas to fully reveal
       context.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -172,27 +183,47 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
 
         {/* The Mask Container ensures both the scratch layer and the content underneath are perfect hearts */}
         <div 
-          className="relative mt-8 mb-12 w-[320px] h-[320px]" 
+          className="relative mt-8 mb-6 w-[340px] h-[340px] max-w-[94vw] aspect-square" 
           ref={containerRef}
           style={heartMaskStyle}
         >
-          {/* Revealed Content (underneath) */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-[#F4DDE2]">
-            <div className="flex flex-col items-center justify-center mt-3">
-              <span className="text-xl text-[#A92543] font-serif font-bold mb-0.5 select-none">ੴ</span>
-              <p className="font-serif text-[10px] uppercase tracking-[0.2em] text-[#A92543] font-bold mb-1">Anand Karaj</p>
-              <p className="font-serif font-bold text-xl text-[#A92543] tracking-wide">
-                {data.weddingDateFormatted}
-              </p>
-              <p className="font-serif text-[0.95rem] text-[#A92543] mt-1 opacity-95">
-                {data.weddingDayFormatted}
-              </p>
-              <p className="font-serif text-xs text-[#A92543] mt-1.5 opacity-85 font-semibold">
-                {data.weddingTimeFormatted}
-              </p>
-              <p className="font-serif text-[10px] text-[#A92543] mt-1 opacity-75 max-w-[200px] line-clamp-1">
-                Gurudwara Shri Guru Singh Sabha
-              </p>
+          {/* Revealed Content (underneath) - starts safely below the cleft so nothing gets clipped */}
+          <div className="absolute inset-0 flex flex-col items-center justify-start text-center pt-[23%] px-4 bg-[#F4DDE2] h-full select-none">
+            {/* Ceremony Tag */}
+            <p className="font-serif text-[11px] sm:text-xs uppercase tracking-[0.24em] text-[#8F1736] font-bold">
+              Anand Karaj
+            </p>
+
+            {/* Wedding Date */}
+            <p className="font-serif font-bold text-xl sm:text-2xl text-[#8F1736] tracking-wide mt-1 leading-tight">
+              {data.weddingDateFormatted}
+            </p>
+
+            {/* Day & Auspicious Time */}
+            <p className="font-serif text-xs sm:text-[13px] text-[#8F1736]/90 font-medium mt-0.5">
+              {data.weddingDayFormatted} • {data.weddingTimeFormatted}
+            </p>
+
+            {/* Subtle Divider */}
+            <div className="flex items-center justify-center gap-2 my-1.5 w-24 opacity-70">
+              <div className="h-[1px] flex-1 bg-[#D9A6B2]"></div>
+              <Heart className="w-2.5 h-2.5 text-[#8F1736] fill-[#8F1736]" />
+              <div className="h-[1px] flex-1 bg-[#D9A6B2]"></div>
+            </div>
+
+            {/* Venue Details */}
+            <div className="flex flex-col items-center justify-center max-w-[210px] px-1 text-center">
+              <div className="flex items-center justify-center gap-1 text-[#8F1736]">
+                <MapPin className="w-3 h-3 text-[#A92543] flex-shrink-0" />
+                <span className="font-serif text-xs sm:text-[13px] font-bold leading-tight">
+                  {venueName}
+                </span>
+              </div>
+              {venueAddress && (
+                <p className="font-serif text-[10px] sm:text-[11px] text-[#8F1736]/80 mt-0.5 leading-tight">
+                  {venueAddress}
+                </p>
+              )}
             </div>
           </div>
 
@@ -211,6 +242,40 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
           />
         </div>
 
+        {/* Revealed Detailed Venue Card & Directions */}
+        {isRevealed && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-sm mb-6 p-4 rounded-2xl bg-white/95 border border-pink-border/80 shadow-xs backdrop-blur-xs flex flex-col items-center text-center"
+          >
+            <span className="text-[10px] font-serif uppercase tracking-widest text-[#A92543] font-bold mb-1">
+              Ceremony Venue
+            </span>
+            <div className="flex items-center gap-1.5 text-sm font-serif font-bold text-[#8F1736]">
+              <MapPin className="w-4 h-4 text-[#A92543] flex-shrink-0" />
+              <span>{venueName}</span>
+            </div>
+            {venueAddress && (
+              <p className="text-xs font-serif text-wine-dark/80 mt-1">
+                {venueAddress}
+              </p>
+            )}
+            {data.venue?.mapUrl && (
+              <a
+                href={data.venue.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#A92543]/10 text-[#A92543] hover:bg-[#A92543]/20 font-serif text-[11px] font-semibold transition-colors"
+              >
+                <MapPin className="w-3 h-3" />
+                <span>Get Venue Directions on Google Maps</span>
+              </a>
+            )}
+          </motion.div>
+        )}
+
         <motion.div 
           animate={{ opacity: isRevealed ? 1 : 0.5 }}
           className="flex flex-col items-center"
@@ -218,7 +283,7 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
           <button
             onClick={() => isRevealed && generateIcsFile(data)}
             disabled={!isRevealed}
-            className={`flex items-center gap-2 px-8 py-3 rounded-full font-serif uppercase tracking-widest text-xs transition-all
+            className={`flex items-center gap-2 px-8 py-3 rounded-full font-serif uppercase tracking-widest text-xs transition-all cursor-pointer
               ${isRevealed 
                 ? 'bg-[#A92543] text-white shadow-md hover:bg-[#8F1736] active:scale-95' 
                 : 'bg-[#D9A6B2]/40 text-[#A92543]/50 cursor-not-allowed'}`}

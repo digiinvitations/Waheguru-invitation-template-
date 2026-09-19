@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
 import { HeartDivider } from "./HeartDivider";
 import { EventDetails } from "../types";
-import { PartyPopper, Calendar, MapPin, Sparkles, Heart, Clock } from "lucide-react";
+import { PartyPopper, Calendar, MapPin, Sparkles, Heart, Clock, X } from "lucide-react";
 
 interface EventsProps {
   events: EventDetails[];
@@ -102,6 +102,31 @@ const formatDisplayDate = (dateStr: string) => {
   return dateStr;
 };
 
+// Systematic date breakdown (Day of week + formatted date)
+const formatSystematicDate = (dateStr: string) => {
+  if (!dateStr) return { dayOfWeek: "", dateFormatted: "" };
+  try {
+    let d: Date | null = null;
+    if (dateStr.includes("-")) {
+      const parts = dateStr.split("-");
+      if (parts.length === 3) {
+        d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      }
+    } else {
+      const parsed = new Date(dateStr.includes("2026") ? dateStr : `${dateStr}, 2026`);
+      if (!isNaN(parsed.getTime())) {
+        d = parsed;
+      }
+    }
+    if (d && !isNaN(d.getTime())) {
+      const dayOfWeek = d.toLocaleDateString("en-US", { weekday: "long" });
+      const dateFormatted = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      return { dayOfWeek, dateFormatted };
+    }
+  } catch (e) {}
+  return { dayOfWeek: "", dateFormatted: dateStr };
+};
+
 function EventPopup({ event, onClose }: { event: EventDetails; onClose: () => void }) {
   const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&details=Wedding+Event&location=${encodeURIComponent(event.location)}`;
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -123,8 +148,6 @@ function EventPopup({ event, onClose }: { event: EventDetails; onClose: () => vo
     }
   }, [event.videoUrl]);
 
-  const displayDate = formatDisplayDate(event.date);
-
   return (
     <div className="fixed inset-0 z-[99999] flex items-center justify-center pointer-events-auto px-4">
       {/* Light pink transparent overlay */}
@@ -136,19 +159,21 @@ function EventPopup({ event, onClose }: { event: EventDetails; onClose: () => vo
         onClick={onClose}
       />
 
-      {/* Skip Video Button on Background */}
+      {/* Close Button on Background */}
       <button 
         onClick={onClose}
-        className="absolute top-6 left-6 z-[100000] px-4 py-2 bg-white/85 rounded-full flex items-center justify-center text-burgundy font-serif text-[10px] uppercase tracking-widest font-bold backdrop-blur-md hover:bg-white transition-colors border border-pink-border shadow-sm"
+        className="absolute top-5 right-5 z-[100000] p-2 sm:px-4 sm:py-2 bg-white/90 rounded-full flex items-center justify-center gap-1.5 text-burgundy font-serif text-[11px] uppercase tracking-widest font-bold backdrop-blur-md hover:bg-white transition-colors border border-pink-border shadow-sm cursor-pointer"
+        aria-label="Close video"
       >
-        Skip Video
+        <X className="w-4 h-4" />
+        <span className="hidden sm:inline">Close</span>
       </button>
 
       <motion.div 
         initial={{ opacity: 0, scale: 0.9, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 10 }}
-        className="relative z-10 w-full max-w-[270px] flex flex-col items-center justify-center"
+        className="relative z-10 w-full max-w-[280px] sm:max-w-[320px] flex flex-col items-center justify-center"
       >
         {/* Celebration animations left and right */}
         <motion.div 
@@ -169,15 +194,6 @@ function EventPopup({ event, onClose }: { event: EventDetails; onClose: () => vo
           🥂
         </motion.div>
 
-        {/* Heading above video */}
-        <div className="mb-4 text-center text-wine-dark w-full drop-shadow-sm flex flex-col items-center">
-          <h3 className="font-script text-4xl mb-1 text-burgundy font-bold">{event.title}</h3>
-          <p className="font-serif text-xs tracking-widest text-wine-dark/80 font-bold mb-2">{displayDate} • {event.time}</p>
-          <div className="font-serif text-[10px] font-bold uppercase tracking-widest text-burgundy flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-pink-border bg-white/80 backdrop-blur-md shadow-sm max-w-full text-center">
-            <MapPin className="w-3.5 h-3.5 flex-shrink-0" /> <span className="truncate">{event.location}</span>
-          </div>
-        </div>
-
         {/* 9:16 Video Container */}
         <div className="w-full aspect-[9/16] rounded-2xl overflow-hidden shadow-xl bg-blush-light relative border-[3px] border-pink-border/80 mx-auto flex-none">
           {event.videoUrl ? (
@@ -197,7 +213,7 @@ function EventPopup({ event, onClose }: { event: EventDetails; onClose: () => vo
         </div>
 
         {/* Buttons below video */}
-        <div className="flex w-full gap-3 mt-5">
+        <div className="flex w-full gap-3 mt-4">
           <a 
             href={calUrl} target="_blank" rel="noopener noreferrer"
             className="flex-1 bg-burgundy text-white py-3 rounded-full font-serif text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 hover:bg-wine-dark transition-colors shadow-lg"
@@ -256,6 +272,11 @@ function TimelineEventNode({
   const emoji = getEventEmoji(event.title, index);
   const quote = getEventQuote(event);
   const displayDate = formatDisplayDate(event.date);
+  const { dayOfWeek, dateFormatted } = formatSystematicDate(event.date);
+  const isWeddingCeremony = 
+    event.title.toLowerCase().includes("wedding") || 
+    event.title.toLowerCase().includes("anand") ||
+    event.title.toLowerCase().includes("karaj");
 
   return (
     <div className="relative w-full flex flex-col items-center">
@@ -267,38 +288,64 @@ function TimelineEventNode({
         >
           {emoji}
         </motion.div>
-
-        {/* Date & Time Pill (Revealed upon hold) */}
-        {isRevealed && (
-          <motion.div 
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/95 border border-pink-border shadow-2xs text-[11px] font-serif font-semibold text-wine-dark uppercase tracking-wider"
-          >
-            <Clock className="w-3 h-3 text-pink-accent" />
-            <span>{displayDate} • {event.time}</span>
-          </motion.div>
-        )}
       </div>
 
       {/* Ceremony Details Card */}
       <div className="w-full max-w-sm flex flex-col items-center text-center mt-3 mb-2 px-2">
         {/* Event Heading - ALWAYS VISIBLE */}
-        <h3 className="font-script text-4xl sm:text-5xl text-burgundy mb-1 drop-shadow-2xs">
+        <h3 className="font-script text-4xl sm:text-5xl text-burgundy mb-1.5 drop-shadow-2xs">
           {event.title}
         </h3>
 
-        {/* Location (Revealed upon hold) */}
-        {isRevealed && (
-          <motion.div
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-center gap-1.5 text-[11px] font-serif text-wine-dark/75 mb-2 px-3"
-          >
+        {/* Systematic Date & Time Display - Bigger size & systematic layout */}
+        <div className={`w-full my-2.5 p-3.5 sm:p-4 rounded-2xl bg-white/95 border shadow-2xs backdrop-blur-xs flex flex-col items-center gap-2 ${
+          isWeddingCeremony 
+            ? 'border-[#D9A6B2] ring-2 ring-[#D9A6B2]/40 bg-gradient-to-b from-white to-[#FDF4F6]' 
+            : 'border-pink-border/80'
+        }`}>
+          {isWeddingCeremony && (
+            <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#8F1736] text-white shadow-2xs">
+              <span className="font-serif text-[10px] font-bold uppercase tracking-widest">
+                ੴ Sacred Anand Karaj Ceremony ੴ
+              </span>
+            </div>
+          )}
+
+          {/* Systematic 2-Column Date & Time Grid */}
+          <div className="w-full grid grid-cols-2 gap-2 text-center items-center py-1">
+            {/* Date Column */}
+            <div className="flex flex-col items-center justify-center border-r border-pink-border/60 pr-2">
+              <div className="flex items-center gap-1 text-pink-accent mb-0.5">
+                <Calendar className="w-3.5 h-3.5" />
+                <span className="text-[10px] uppercase tracking-widest font-serif font-bold text-wine-dark/70">
+                  {dayOfWeek || "Date"}
+                </span>
+              </div>
+              <span className="font-serif text-base sm:text-lg font-bold text-burgundy tracking-wide">
+                {dateFormatted || displayDate}
+              </span>
+            </div>
+
+            {/* Time Column */}
+            <div className="flex flex-col items-center justify-center pl-2">
+              <div className="flex items-center gap-1 text-pink-accent mb-0.5">
+                <Clock className="w-3.5 h-3.5" />
+                <span className="text-[10px] uppercase tracking-widest font-serif font-bold text-wine-dark/70">
+                  Auspicious Time
+                </span>
+              </div>
+              <span className="font-serif text-base sm:text-lg font-bold text-[#8F1736] tracking-wide">
+                {event.time}
+              </span>
+            </div>
+          </div>
+
+          {/* Location Line */}
+          <div className="w-full pt-2 border-t border-pink-border/40 flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-serif text-wine-dark/85 text-center">
             <MapPin className="w-3.5 h-3.5 text-pink-accent flex-shrink-0" />
             <span className="leading-snug">{event.location}</span>
-          </motion.div>
-        )}
+          </div>
+        </div>
 
         {/* Sacred Quote - Always Visible */}
         <div className="w-full my-3 px-5 py-3.5 rounded-2xl bg-white/85 border border-pink-border/90 shadow-2xs backdrop-blur-xs text-center relative overflow-hidden">

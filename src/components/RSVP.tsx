@@ -130,7 +130,7 @@ export function RSVP({ data }: RSVPProps) {
 
                     {/* WhatsApp */}
                     <a
-                      href={`https://wa.me/91${phone}?text=${encodeURIComponent("Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh! Connecting regarding the wedding invitation of Jaspreet & Jasmeet.")}`}
+                      href={`https://wa.me/91${phone}?text=${encodeURIComponent("Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh! Connecting regarding the wedding invitation of Jasmeet & Jaspreet.")}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 sm:flex-initial px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-serif text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-all active:scale-95"
@@ -218,7 +218,7 @@ export function RSVP({ data }: RSVPProps) {
                   id="message" 
                   name="message"
                   rows={2}
-                  placeholder="Write your wishes for Jaspreet &amp; Jasmeet..."
+                  placeholder="Write your wishes for Jasmeet &amp; Jaspreet..."
                   className="w-full bg-white border border-pink-border/90 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-pink-accent focus:ring-1 focus:ring-pink-accent transition-colors resize-none"
                   disabled={status === "submitting"}
                 ></textarea>

@@ -115,24 +115,26 @@ export function Hero({ data, shouldPlayVideo = true, onVideoEnd }: HeroProps) {
             transition={{ duration: 1.5, delay: 0.5 }}
             className="flex flex-col items-center justify-center w-full"
           >
+            {/* Bride First */}
             <h1 className="font-script text-6xl text-wine-dark drop-shadow-sm leading-none">
-              {data.groom.name}
+              {data.bride.name}
             </h1>
             <div className="font-serif text-[12px] text-wine-dark/85 flex flex-col items-center gap-1 mt-2 mb-5 font-normal">
-              <p>{data.groom.parents}</p>
-              {data.groom.education && <p>{data.groom.education}</p>}
-              {data.groom.profession && <p>{data.groom.profession}</p>}
+              <p>{data.bride.parents}</p>
+              {data.bride.education && <p>{data.bride.education}</p>}
+              {data.bride.profession && <p>{data.bride.profession}</p>}
             </div>
             
             <span className="font-script text-3xl text-pink-accent my-1">&amp;</span>
             
+            {/* Groom Just Below Bride */}
             <h1 className="font-script text-6xl text-wine-dark drop-shadow-sm leading-none mt-3">
-              {data.bride.name}
+              {data.groom.name}
             </h1>
             <div className="font-serif text-[12px] text-wine-dark/85 flex flex-col items-center gap-1 mt-2 font-normal">
-              <p>{data.bride.parents}</p>
-              {data.bride.education && <p>{data.bride.education}</p>}
-              {data.bride.profession && <p>{data.bride.profession}</p>}
+              <p>{data.groom.parents}</p>
+              {data.groom.education && <p>{data.groom.education}</p>}
+              {data.groom.profession && <p>{data.groom.profession}</p>}
             </div>
           </motion.div>
         </div>

@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { HeartDivider } from "./HeartDivider";
 import { EventDetails } from "../types";
-import { Clock, MapPin, CalendarHeart } from "lucide-react";
+import { Clock, MapPin, CalendarHeart, Calendar } from "lucide-react";
 
 interface TimelineProps {
   events: EventDetails[];
@@ -98,15 +98,20 @@ export function Timeline({ events }: TimelineProps) {
                 
                 {/* Content Card */}
                 <div className={`w-[48%] md:w-[45%] ${isEven ? 'pr-4 md:pr-10 text-right' : 'pl-4 md:pl-10 text-left'} relative z-0`}>
-                  <div className="bg-white/60 backdrop-blur-sm p-4 md:p-5 rounded-xl md:rounded-2xl border border-pink-border/40 shadow-sm hover:shadow-md transition-shadow relative">
-                    <h3 className="font-script text-2xl md:text-3xl text-burgundy mb-1">{item.title}</h3>
+                  <div className="bg-white/70 backdrop-blur-sm p-4 md:p-5 rounded-xl md:rounded-2xl border border-pink-border/50 shadow-sm hover:shadow-md transition-shadow relative">
+                    <h3 className="font-script text-2xl md:text-3xl text-burgundy mb-1.5">{item.title}</h3>
                     
                     <div className={`flex flex-col gap-1.5 mb-2 md:mb-3 ${isEven ? 'items-end' : 'items-start'}`}>
-                      <p className="text-wine-dark/80 font-bold font-serif text-[9px] md:text-[11px] uppercase tracking-widest flex items-center gap-1.5">
-                        <Clock className="w-3 h-3 md:w-3.5 md:h-3.5 text-pink-accent" /> {displayDate} • {item.time}
-                      </p>
-                      <p className="text-wine-dark/80 font-bold font-serif text-[9px] md:text-[11px] uppercase tracking-widest flex items-center gap-1.5 text-left sm:text-right">
-                        <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5 text-pink-accent flex-shrink-0" /> <span className="break-words">{item.location}</span>
+                      <div className={`flex flex-wrap gap-x-2.5 gap-y-1 items-center ${isEven ? 'justify-end' : 'justify-start'}`}>
+                        <span className="text-burgundy font-bold font-serif text-xs md:text-sm tracking-wide flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5 text-pink-accent" /> {displayDate}
+                        </span>
+                        <span className="text-wine-dark font-semibold font-serif text-xs md:text-sm tracking-wide flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5 text-pink-accent" /> {item.time}
+                        </span>
+                      </div>
+                      <p className="text-wine-dark/80 font-medium font-serif text-[10px] md:text-xs tracking-wider flex items-center gap-1.5 text-left sm:text-right">
+                        <MapPin className="w-3.5 h-3.5 text-pink-accent flex-shrink-0" /> <span className="break-words">{item.location}</span>
                       </p>
                     </div>
 

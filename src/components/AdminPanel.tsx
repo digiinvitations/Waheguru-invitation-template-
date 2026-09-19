@@ -163,14 +163,14 @@ export function AdminPanel() {
         version: "1.0",
         exportedAt: new Date().toISOString(),
         databaseSlot: getEnvironmentDocId(),
-        couple: `${data.groom?.name || "Groom"} & ${data.bride?.name || "Bride"}`,
+        couple: `${data.bride?.name || "Bride"} & ${data.groom?.name || "Groom"}`,
         data: data
       };
       const jsonString = JSON.stringify(exportPayload, null, 2);
       const blob = new Blob([jsonString], { type: "application/json;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      const safeCouple = `${data.groom?.name || "wedding"}_and_${data.bride?.name || "invitation"}`
+      const safeCouple = `${data.bride?.name || "wedding"}_and_${data.groom?.name || "invitation"}`
         .toLowerCase()
         .replace(/[^a-z0-9_-]/gi, "_");
       link.href = url;
@@ -309,7 +309,7 @@ export function AdminPanel() {
     const lines: string[] = [
       `================================================`,
       `WEDDING ASSET & MEDIA URL BACKUP`,
-      `Couple: ${data.groom?.name} & ${data.bride?.name}`,
+      `Couple: ${data.bride?.name} & ${data.groom?.name}`,
       `Generated: ${new Date().toLocaleString()}`,
       `Database Slot: ${currentSlot}`,
       `================================================`,
@@ -602,21 +602,21 @@ export function AdminPanel() {
 
           {/* Couple Details */}
           <section>
-            <h2 className="text-xl font-bold text-wine-dark mb-4">Couple Details</h2>
+            <h2 className="text-xl font-bold text-wine-dark mb-4">Couple Details (Bride & Groom)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4 bg-blush-light p-4 rounded-lg border border-pink-border/50">
-                <h3 className="font-bold">Groom</h3>
-                <Input label="Name" value={data.groom.name} onChange={(v) => handleChange("groom.name", v)} />
-                <Input label="Parents" value={data.groom.parents} onChange={(v) => handleChange("groom.parents", v)} />
-                <Input label="Education" value={data.groom.education} onChange={(v) => handleChange("groom.education", v)} />
-                <Input label="Profession" value={data.groom.profession} onChange={(v) => handleChange("groom.profession", v)} />
-              </div>
-              <div className="space-y-4 bg-blush-light p-4 rounded-lg border border-pink-border/50">
-                <h3 className="font-bold">Bride</h3>
+                <h3 className="font-bold text-burgundy">Bride Details</h3>
                 <Input label="Name" value={data.bride.name} onChange={(v) => handleChange("bride.name", v)} />
                 <Input label="Parents" value={data.bride.parents} onChange={(v) => handleChange("bride.parents", v)} />
                 <Input label="Education" value={data.bride.education} onChange={(v) => handleChange("bride.education", v)} />
                 <Input label="Profession" value={data.bride.profession} onChange={(v) => handleChange("bride.profession", v)} />
+              </div>
+              <div className="space-y-4 bg-blush-light p-4 rounded-lg border border-pink-border/50">
+                <h3 className="font-bold text-wine-dark">Groom Details</h3>
+                <Input label="Name" value={data.groom.name} onChange={(v) => handleChange("groom.name", v)} />
+                <Input label="Parents" value={data.groom.parents} onChange={(v) => handleChange("groom.parents", v)} />
+                <Input label="Education" value={data.groom.education} onChange={(v) => handleChange("groom.education", v)} />
+                <Input label="Profession" value={data.groom.profession} onChange={(v) => handleChange("groom.profession", v)} />
               </div>
             </div>
           </section>

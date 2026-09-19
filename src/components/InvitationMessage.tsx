@@ -4,10 +4,9 @@ import { Heart } from "lucide-react";
 interface InvitationMessageProps {
   message: string;
   isHeroEnded?: boolean;
-  invitedBy?: string;
 }
 
-export function InvitationMessage({ message, isHeroEnded, invitedBy }: InvitationMessageProps) {
+export function InvitationMessage({ message, isHeroEnded }: InvitationMessageProps) {
   return (
     <section className="relative px-6 pt-28 pb-24 bg-gradient-to-b from-white via-[#FAF5F6] to-[#F8E8EB] flex flex-col items-center text-center">
       <div className={`absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-white via-white/60 to-transparent pointer-events-none transition-opacity duration-1000 z-0 ${isHeroEnded ? 'opacity-100' : 'opacity-0'}`} />
@@ -25,13 +24,6 @@ export function InvitationMessage({ message, isHeroEnded, invitedBy }: Invitatio
           <div className="h-[1px] w-16 bg-gradient-to-r from-transparent to-[#D9A6B2]"></div>
           <span className="text-2xl text-[#8F1736] font-serif font-bold select-none">ੴ</span>
           <div className="h-[1px] w-16 bg-gradient-to-l from-transparent to-[#D9A6B2]"></div>
-        </div>
-
-        {/* Respected Elder Invitation Pill */}
-        <div className="mb-6 px-4 py-1.5 rounded-full bg-white/70 border border-[#D9A6B2]/50 shadow-2xs backdrop-blur-xs">
-          <span className="text-xs font-serif font-bold text-[#8F1736] tracking-wider uppercase">
-            Invitation by {invitedBy || "Grandmother Sdn. Jasmer Kaur"}
-          </span>
         </div>
 
         {/* Sacred Anand Karaj Tuk */}
