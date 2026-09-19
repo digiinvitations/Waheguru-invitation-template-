@@ -187,43 +187,33 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
           ref={containerRef}
           style={heartMaskStyle}
         >
-          {/* Revealed Content (underneath) - starts safely below the cleft so nothing gets clipped */}
-          <div className="absolute inset-0 flex flex-col items-center justify-start text-center pt-[23%] px-4 bg-[#F4DDE2] h-full select-none">
+          {/* Revealed Content (underneath) - perfectly framed in the wide upper-middle region */}
+          <div className="absolute inset-0 flex flex-col items-center justify-start text-center pt-[18%] sm:pt-[19%] px-6 bg-[#F4DDE2] h-full select-none">
+            {/* Sacred Ek Onkar Logo */}
+            <span className="text-2xl sm:text-3xl text-[#8F1736] font-serif font-bold mb-1 leading-none drop-shadow-2xs">
+              ੴ
+            </span>
+
             {/* Ceremony Tag */}
-            <p className="font-serif text-[11px] sm:text-xs uppercase tracking-[0.24em] text-[#8F1736] font-bold">
+            <p className="font-serif text-[11px] sm:text-xs uppercase tracking-[0.24em] text-[#8F1736] font-bold mt-0.5">
               Anand Karaj
             </p>
 
             {/* Wedding Date */}
-            <p className="font-serif font-bold text-xl sm:text-2xl text-[#8F1736] tracking-wide mt-1 leading-tight">
+            <p className="font-serif font-bold text-2xl sm:text-3xl text-[#8F1736] tracking-wide mt-2 leading-tight">
               {data.weddingDateFormatted}
             </p>
 
             {/* Day & Auspicious Time */}
-            <p className="font-serif text-xs sm:text-[13px] text-[#8F1736]/90 font-medium mt-0.5">
+            <p className="font-serif text-xs sm:text-sm text-[#8F1736]/95 font-medium mt-1">
               {data.weddingDayFormatted} • {data.weddingTimeFormatted}
             </p>
 
-            {/* Subtle Divider */}
-            <div className="flex items-center justify-center gap-2 my-1.5 w-24 opacity-70">
+            {/* Subtle Ornamental Divider */}
+            <div className="flex items-center justify-center gap-2 mt-2.5 w-28 opacity-75">
               <div className="h-[1px] flex-1 bg-[#D9A6B2]"></div>
               <Heart className="w-2.5 h-2.5 text-[#8F1736] fill-[#8F1736]" />
               <div className="h-[1px] flex-1 bg-[#D9A6B2]"></div>
-            </div>
-
-            {/* Venue Details */}
-            <div className="flex flex-col items-center justify-center max-w-[210px] px-1 text-center">
-              <div className="flex items-center justify-center gap-1 text-[#8F1736]">
-                <MapPin className="w-3 h-3 text-[#A92543] flex-shrink-0" />
-                <span className="font-serif text-xs sm:text-[13px] font-bold leading-tight">
-                  {venueName}
-                </span>
-              </div>
-              {venueAddress && (
-                <p className="font-serif text-[10px] sm:text-[11px] text-[#8F1736]/80 mt-0.5 leading-tight">
-                  {venueAddress}
-                </p>
-              )}
             </div>
           </div>
 
@@ -242,39 +232,36 @@ export function ScratchCardSection({ data, onReveal }: ScratchCardProps) {
           />
         </div>
 
-        {/* Revealed Detailed Venue Card & Directions */}
-        {isRevealed && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="w-full max-w-sm mb-6 p-4 rounded-2xl bg-white/95 border border-pink-border/80 shadow-xs backdrop-blur-xs flex flex-col items-center text-center"
-          >
-            <span className="text-[10px] font-serif uppercase tracking-widest text-[#A92543] font-bold mb-1">
-              Ceremony Venue
-            </span>
-            <div className="flex items-center gap-1.5 text-sm font-serif font-bold text-[#8F1736]">
-              <MapPin className="w-4 h-4 text-[#A92543] flex-shrink-0" />
-              <span>{venueName}</span>
-            </div>
-            {venueAddress && (
-              <p className="text-xs font-serif text-wine-dark/80 mt-1">
-                {venueAddress}
-              </p>
-            )}
-            {data.venue?.mapUrl && (
-              <a
-                href={data.venue.mapUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#A92543]/10 text-[#A92543] hover:bg-[#A92543]/20 font-serif text-[11px] font-semibold transition-colors"
-              >
-                <MapPin className="w-3 h-3" />
-                <span>Get Venue Directions on Google Maps</span>
-              </a>
-            )}
-          </motion.div>
-        )}
+        {/* Ceremony Venue Card - Placed below the scratch heart separately as requested */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="w-full max-w-sm mb-6 p-4 sm:p-5 rounded-2xl bg-white/95 border border-pink-border/80 shadow-xs backdrop-blur-xs flex flex-col items-center text-center"
+        >
+          <span className="text-[10px] font-serif uppercase tracking-widest text-[#A92543] font-bold mb-1.5 flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 text-pink-accent" /> Ceremony Venue
+          </span>
+          <h4 className="text-sm sm:text-base font-serif font-bold text-[#8F1736] leading-snug">
+            {venueName}
+          </h4>
+          {venueAddress && (
+            <p className="text-xs sm:text-[13px] font-serif text-wine-dark/80 mt-1 leading-relaxed">
+              {venueAddress}
+            </p>
+          )}
+          {data.venue?.mapUrl && (
+            <a
+              href={data.venue.mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#A92543]/10 text-[#A92543] hover:bg-[#A92543]/20 font-serif text-[11px] font-semibold transition-colors shadow-2xs"
+            >
+              <MapPin className="w-3 h-3" />
+              <span>Get Venue Directions on Google Maps</span>
+            </a>
+          )}
+        </motion.div>
 
         <motion.div 
           animate={{ opacity: isRevealed ? 1 : 0.5 }}

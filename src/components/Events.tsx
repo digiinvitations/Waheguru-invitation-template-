@@ -297,11 +297,11 @@ function TimelineEventNode({
           {event.title}
         </h3>
 
-        {/* Systematic Date & Time Display - Bigger size & systematic layout */}
-        <div className={`w-full my-2.5 p-3.5 sm:p-4 rounded-2xl bg-white/95 border shadow-2xs backdrop-blur-xs flex flex-col items-center gap-2 ${
+        {/* Systematic Date & Time Display - Prominent, larger size & systematic layout */}
+        <div className={`w-full my-3 p-4 sm:p-5 rounded-2xl bg-white/95 border shadow-2xs backdrop-blur-xs flex flex-col items-center gap-2.5 ${
           isWeddingCeremony 
             ? 'border-[#D9A6B2] ring-2 ring-[#D9A6B2]/40 bg-gradient-to-b from-white to-[#FDF4F6]' 
-            : 'border-pink-border/80'
+            : 'border-pink-border/90'
         }`}>
           {isWeddingCeremony && (
             <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#8F1736] text-white shadow-2xs">
@@ -312,36 +312,36 @@ function TimelineEventNode({
           )}
 
           {/* Systematic 2-Column Date & Time Grid */}
-          <div className="w-full grid grid-cols-2 gap-2 text-center items-center py-1">
-            {/* Date Column */}
+          <div className="w-full grid grid-cols-2 gap-3 text-center items-center py-1">
+            {/* Date Column - Significantly larger & bold for maximum visibility */}
             <div className="flex flex-col items-center justify-center border-r border-pink-border/60 pr-2">
-              <div className="flex items-center gap-1 text-pink-accent mb-0.5">
-                <Calendar className="w-3.5 h-3.5" />
-                <span className="text-[10px] uppercase tracking-widest font-serif font-bold text-wine-dark/70">
+              <div className="flex items-center gap-1.5 text-pink-accent mb-1">
+                <Calendar className="w-4 h-4 text-pink-accent flex-shrink-0" />
+                <span className="text-[11px] sm:text-xs uppercase tracking-widest font-serif font-bold text-wine-dark/75">
                   {dayOfWeek || "Date"}
                 </span>
               </div>
-              <span className="font-serif text-base sm:text-lg font-bold text-burgundy tracking-wide">
+              <span className="font-serif text-xl sm:text-2xl md:text-[26px] font-extrabold text-burgundy tracking-wide leading-tight drop-shadow-2xs">
                 {dateFormatted || displayDate}
               </span>
             </div>
 
             {/* Time Column */}
             <div className="flex flex-col items-center justify-center pl-2">
-              <div className="flex items-center gap-1 text-pink-accent mb-0.5">
-                <Clock className="w-3.5 h-3.5" />
-                <span className="text-[10px] uppercase tracking-widest font-serif font-bold text-wine-dark/70">
+              <div className="flex items-center gap-1.5 text-pink-accent mb-1">
+                <Clock className="w-4 h-4 text-pink-accent flex-shrink-0" />
+                <span className="text-[11px] sm:text-xs uppercase tracking-widest font-serif font-bold text-wine-dark/75">
                   Auspicious Time
                 </span>
               </div>
-              <span className="font-serif text-base sm:text-lg font-bold text-[#8F1736] tracking-wide">
+              <span className="font-serif text-base sm:text-lg md:text-xl font-bold text-[#8F1736] tracking-wide leading-tight">
                 {event.time}
               </span>
             </div>
           </div>
 
           {/* Location Line */}
-          <div className="w-full pt-2 border-t border-pink-border/40 flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-serif text-wine-dark/85 text-center">
+          <div className="w-full pt-2.5 border-t border-pink-border/40 flex items-center justify-center gap-1.5 text-xs sm:text-sm font-serif text-wine-dark/90 text-center font-medium">
             <MapPin className="w-3.5 h-3.5 text-pink-accent flex-shrink-0" />
             <span className="leading-snug">{event.location}</span>
           </div>

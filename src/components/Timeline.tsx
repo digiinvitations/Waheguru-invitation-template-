@@ -103,10 +103,10 @@ export function Timeline({ events }: TimelineProps) {
                     
                     <div className={`flex flex-col gap-1.5 mb-2 md:mb-3 ${isEven ? 'items-end' : 'items-start'}`}>
                       <div className={`flex flex-wrap gap-x-2.5 gap-y-1 items-center ${isEven ? 'justify-end' : 'justify-start'}`}>
-                        <span className="text-burgundy font-bold font-serif text-xs md:text-sm tracking-wide flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-pink-accent" /> {displayDate}
+                        <span className="text-burgundy font-bold font-serif text-sm md:text-base tracking-wide flex items-center gap-1.5">
+                          <Calendar className="w-4 h-4 text-pink-accent" /> {displayDate}
                         </span>
-                        <span className="text-wine-dark font-semibold font-serif text-xs md:text-sm tracking-wide flex items-center gap-1">
+                        <span className="text-wine-dark font-semibold font-serif text-xs md:text-sm tracking-wide flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5 text-pink-accent" /> {item.time}
                         </span>
                       </div>
