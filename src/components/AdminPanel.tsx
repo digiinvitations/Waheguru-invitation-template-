@@ -423,7 +423,7 @@ export function AdminPanel() {
 
         <div className="space-y-8">
 
-          {/* REMIX ISOLATION & DATABASE STATUS BANNER */}
+          {/* HOSTING & VERCEL SYNCHRONIZATION STATUS BANNER */}
           <div className="bg-gradient-to-r from-pink-50 to-blush-light rounded-xl p-5 border border-pink-border/70 shadow-xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-start gap-3">
@@ -432,33 +432,50 @@ export function AdminPanel() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-bold text-wine-dark text-sm">Database Isolation & Remix Protection</h3>
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                      isOfficial 
-                        ? "bg-emerald-100 text-emerald-800 border border-emerald-300" 
-                        : "bg-blue-100 text-blue-800 border border-blue-300"
-                    }`}>
-                      {isOfficial ? "Official Master Site" : "Isolated Remix Instance"}
+                    <h3 className="font-bold text-wine-dark text-sm">Cloud Database & Hosting Synchronization</h3>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                      Vercel & Previews Synced
                     </span>
                   </div>
                   <p className="text-xs text-text-body/80 mt-1 font-sans">
-                    Active Storage Slot: <code className="bg-white/80 px-1.5 py-0.5 rounded border border-pink-border/50 text-wine-dark font-mono text-[11px]">{currentSlot}</code>
+                    Active Storage Document: <code className="bg-white/80 px-1.5 py-0.5 rounded border border-pink-border/50 text-wine-dark font-mono text-[11px]">{currentSlot}</code>
                   </p>
                   <p className="text-xs text-text-body/70 mt-0.5 font-sans">
-                    {isOfficial 
-                      ? "This is your primary master website. When you create a remix, the remix will automatically receive its own independent slot."
-                      : "Remix isolation is active. All edits and files saved in this remix will NEVER touch or overwrite the official website."}
+                    All updates saved in this Admin Panel are automatically synchronized across your Vercel hosting link (<code className="font-mono text-[11px]">*.vercel.app</code>) and AI Studio previews in real-time.
                   </p>
                 </div>
               </div>
 
-              <button 
-                type="button"
-                onClick={() => setShowSlotSettings(!showSlotSettings)}
-                className="text-xs text-wine-dark underline hover:text-burgundy font-sans self-end sm:self-center"
-              >
-                {showSlotSettings ? "Hide Slot Settings" : "Slot Settings"}
-              </button>
+              <div className="flex items-center gap-2 self-end sm:self-center">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!data) return;
+                    setSaving(true);
+                    try {
+                      await saveWeddingData(data);
+                      alert("Successfully synchronized data to Vercel hosting and all database slots!");
+                    } catch (e) {
+                      console.error(e);
+                      alert("Sync error. Please try again.");
+                    } finally {
+                      setSaving(false);
+                    }
+                  }}
+                  disabled={saving}
+                  className="bg-wine-dark hover:bg-burgundy text-white text-xs px-3 py-1.5 rounded-lg shadow-xs transition-colors flex items-center gap-1.5 font-sans"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  Sync to Vercel
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setShowSlotSettings(!showSlotSettings)}
+                  className="text-xs text-wine-dark underline hover:text-burgundy font-sans"
+                >
+                  {showSlotSettings ? "Hide Options" : "Options"}
+                </button>
+              </div>
             </div>
 
             {showSlotSettings && (

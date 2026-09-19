@@ -3,51 +3,45 @@ import { db } from "../firebase";
 import { WeddingData } from "../types";
 import { weddingData as defaultData } from "../data";
 
-export const OFFICIAL_DOC_ID = "NEW TEMPLATE FOR 7";
-export const OFFICIAL_HASH = "rl2cohqvo2tuixw5mclqfx-14313311583";
+// Unified Canonical Document ID for this wedding
+export const OFFICIAL_DOC_ID = "wedding_data_jaspreet_weds_jasmeet";
+export const CANONICAL_DOC_ID = "wedding_data_jaspreet_weds_jasmeet";
 
-// Generate a unique ID based on the environment to prevent remixes from overwriting each other's data.
+// Known fallback/legacy slots to keep synchronized across Vercel hosting, AI Studio, and local testing
+export const SYNC_TARGET_DOC_IDS = [
+  "wedding_data_jaspreet_weds_jasmeet",
+  "wedding_data_draft-invitation-for-jaspreet-weds_vercel_app",
+  "wedding_data_wjhktkcue5d2mszgfuvmql-14313311583",
+  "wedding_data_local",
+  "NEW TEMPLATE FOR 7"
+];
+
+// Generate or retrieve the active database slot ID
 export function getEnvironmentDocId(): string {
-  if (typeof window === 'undefined') return OFFICIAL_DOC_ID;
+  if (typeof window === 'undefined') return CANONICAL_DOC_ID;
 
-  // Check if user set a custom slot override in localStorage
+  // 1. Check if user specified an explicit custom slot override in localStorage
   try {
     const customSlot = localStorage.getItem("wedding_custom_slot_id");
-    if (customSlot && customSlot.trim()) {
+    if (customSlot && customSlot.trim() && customSlot.trim() !== "auto") {
       return customSlot.trim();
     }
   } catch (e) {
     // localStorage might be unavailable in some sandboxes
   }
 
-  const hostname = window.location.hostname;
-  
-  // Match AI Studio preview URLs: ais-dev-HASH... or ais-pre-HASH...
-  const match = hostname.match(/ais-(?:dev|pre)-([^.]+)/);
-  if (match) {
-    // Exact official website hash
-    if (match[1] === OFFICIAL_HASH) {
-      return OFFICIAL_DOC_ID;
-    }
-    // Any remix in AI Studio gets its own unique, isolated slot based on its hash
-    return `wedding_data_${match[1]}`;
+  // 2. Check for explicit environment variable override if provided
+  const envSlot = (import.meta as any).env?.VITE_WEDDING_DOC_ID;
+  if (envSlot && typeof envSlot === "string" && envSlot.trim()) {
+    return envSlot.trim();
   }
 
-  // If running locally (localhost)
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return "wedding_data_local";
-  }
-
-  // Deployed to Vercel/Netlify or custom domain: isolate by domain name
-  const cleanDomain = hostname.replace(/[^a-zA-Z0-9_-]/g, '_');
-  return `wedding_data_${cleanDomain}`;
+  // 3. Default: Both Vercel hosting and AI Studio development connect to the unified canonical document
+  return CANONICAL_DOC_ID;
 }
 
 export function isOfficialInstance(): boolean {
-  if (typeof window === 'undefined') return true;
-  const hostname = window.location.hostname;
-  const match = hostname.match(/ais-(?:dev|pre)-([^.]+)/);
-  return !!(match && match[1] === OFFICIAL_HASH);
+  return true;
 }
 
 export function setCustomSlotId(slotId: string) {
@@ -62,32 +56,35 @@ export function setCustomSlotId(slotId: string) {
 }
 
 export function getRsvpCollectionName(): string {
-  if (typeof window === 'undefined') return "rsvps";
-
-  try {
-    const customSlot = localStorage.getItem("wedding_custom_slot_id");
-    if (customSlot && customSlot.trim()) {
-      return `rsvps_${customSlot.trim()}`;
-    }
-  } catch (e) {}
-
-  const hostname = window.location.hostname;
-  const match = hostname.match(/ais-(?:dev|pre)-([^.]+)/);
-  if (match) {
-    if (match[1] === OFFICIAL_HASH) {
-      return `rsvps_${OFFICIAL_HASH}`;
-    }
-    return `rsvps_${match[1]}`;
-  }
-  const cleanDomain = hostname.replace(/[^a-zA-Z0-9_-]/g, '_');
-  return `rsvps_${cleanDomain}`;
+  return "rsvps";
 }
 
 export async function getWeddingData(): Promise<WeddingData> {
   try {
     const slotId = getEnvironmentDocId();
     const docRef = doc(db, "weddingConfig", slotId);
-    const docSnap = await getDoc(docRef);
+    let docSnap = await getDoc(docRef);
+
+    // If active slot is empty or missing, search fallback target slots
+    if (!docSnap.exists()) {
+      for (const fallbackId of SYNC_TARGET_DOC_IDS) {
+        if (fallbackId === slotId) continue;
+        try {
+          const fallbackRef = doc(db, "weddingConfig", fallbackId);
+          const fallbackSnap = await getDoc(fallbackRef);
+          if (fallbackSnap.exists()) {
+            docSnap = fallbackSnap;
+            // Seed the current slot with the found data
+            try {
+              await setDoc(docRef, fallbackSnap.data());
+            } catch (e) {}
+            break;
+          }
+        } catch (err) {
+          // ignore lookup errors on individual fallbacks
+        }
+      }
+    }
 
     if (docSnap.exists()) {
       const remoteData = docSnap.data() as WeddingData;
@@ -103,24 +100,9 @@ export async function getWeddingData(): Promise<WeddingData> {
         rsvpPhones: remoteData.rsvpPhones && remoteData.rsvpPhones.length > 0 ? remoteData.rsvpPhones : defaultData.rsvpPhones,
       };
     } else {
-      // Initialize new slot:
-      // If this is a remix, clone the official template so all uploaded media/videos/details are inherited,
-      // but saved to this new isolated slot so the official website is never touched!
-      let initialData: WeddingData = defaultData;
-      if (slotId !== OFFICIAL_DOC_ID) {
-        try {
-          const masterDocRef = doc(db, "weddingConfig", OFFICIAL_DOC_ID);
-          const masterSnap = await getDoc(masterDocRef);
-          if (masterSnap.exists()) {
-            initialData = masterSnap.data() as WeddingData;
-          }
-        } catch (err) {
-          console.warn("Could not copy initial data from official master, using defaultData", err);
-        }
-      }
-
-      await setDoc(docRef, initialData);
-      return initialData;
+      // Initialize with defaultData
+      await setDoc(docRef, defaultData);
+      return defaultData;
     }
   } catch (error) {
     console.error("Error fetching wedding data:", error);
@@ -129,14 +111,33 @@ export async function getWeddingData(): Promise<WeddingData> {
 }
 
 export async function saveWeddingData(data: WeddingData): Promise<void> {
+  const cleanData = { ...data };
+  if (cleanData.heroLogoUrl === "/src/assets/ikonkar-gold.svg") {
+    cleanData.heroLogoUrl = "/ikonkar-gold.svg";
+  }
+
   const slotId = getEnvironmentDocId();
   const docRef = doc(db, "weddingConfig", slotId);
-  await setDoc(docRef, data);
+  await setDoc(docRef, cleanData);
+
+  // Synchronize across all known legacy and Vercel slots so every hosting link stays updated
+  const syncTargets = Array.from(new Set([
+    ...SYNC_TARGET_DOC_IDS,
+    slotId
+  ]));
+
+  const syncPromises = syncTargets.map(id => 
+    setDoc(doc(db, "weddingConfig", id), cleanData).catch(e => {
+      console.warn(`Sync warning for ${id}:`, e);
+    })
+  );
+
+  await Promise.allSettled(syncPromises);
 }
 
 export async function submitRSVP(rsvpData: any): Promise<void> {
-  const collectionName = getRsvpCollectionName();
-  const rsvpCollection = collection(db, collectionName);
+  const slotId = getEnvironmentDocId();
+  const rsvpCollection = collection(db, "weddingConfig", slotId, "rsvps");
   await addDoc(rsvpCollection, {
     ...rsvpData,
     submittedAt: new Date().toISOString()
@@ -145,8 +146,8 @@ export async function submitRSVP(rsvpData: any): Promise<void> {
 
 export async function getRSVPs(): Promise<any[]> {
   try {
-    const collectionName = getRsvpCollectionName();
-    const rsvpCollection = collection(db, collectionName);
+    const slotId = getEnvironmentDocId();
+    const rsvpCollection = collection(db, "weddingConfig", slotId, "rsvps");
     const snapshot = await getDocs(rsvpCollection);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
