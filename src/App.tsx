@@ -67,19 +67,15 @@ function PublicView() {
     return <div className="min-h-screen bg-blush-main flex items-center justify-center font-serif text-wine-dark">Loading...</div>;
   }
 
-  if (isPreloading) {
-    return <Preloader data={data} onComplete={() => setIsPreloading(false)} />;
-  }
-
   return (
     <div className={`w-full bg-blush-main relative mx-auto max-w-md shadow-2xl overflow-hidden sm:my-0 ${viewState !== 'main' ? 'h-[100svh]' : 'min-h-[100svh]'}`}>
       
       {/* Website Background Music starts when viewState transitions to 'main' */}
-      <MusicControl musicUrl={data.musicUrl} shouldPlay={viewState === 'main'} />
+      <MusicControl musicUrl={data.musicUrl} shouldPlay={viewState === 'main' && !isPreloading} />
 
       {/* Main Content */}
       <main className="w-full min-h-[100svh] bg-blush-main relative overflow-hidden">
-        <Hero data={data} shouldPlayVideo={viewState === 'main'} onVideoEnd={() => setIsHeroEnded(true)} />
+        <Hero data={data} shouldPlayVideo={viewState === 'main' && !isPreloading} onVideoEnd={() => setIsHeroEnded(true)} />
         <InvitationMessage message={data.invitationMessage} isHeroEnded={isHeroEnded} invitedBy={data.invitedBy} />
         <ScratchCardSection data={data} onReveal={() => setIsScratched(true)} />
         {isScratched && <Countdown targetDate={data.weddingDate} />}
@@ -97,6 +93,11 @@ function PublicView() {
           data={data} 
           onComplete={() => setViewState('main')} 
         />
+      )}
+
+      {/* Fullscreen Preloader Overlay - Ensures everything is completely loaded and buffered before revealing */}
+      {isPreloading && (
+        <Preloader data={data} onComplete={() => setIsPreloading(false)} />
       )}
     </div>
   );

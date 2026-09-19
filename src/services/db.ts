@@ -91,6 +91,9 @@ export async function getWeddingData(): Promise<WeddingData> {
 
     if (docSnap.exists()) {
       const remoteData = docSnap.data() as WeddingData;
+      if (remoteData.heroLogoUrl === "/src/assets/ikonkar-gold.svg") {
+        remoteData.heroLogoUrl = "/ikonkar-gold.svg";
+      }
       return {
         ...defaultData,
         ...remoteData,

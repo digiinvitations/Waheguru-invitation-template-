@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { WeddingData } from '../types';
+import { IkOnkarSymbol } from './IkOnkarSymbol';
 
 interface PreloaderProps {
   data: WeddingData;
   onComplete: () => void;
 }
 
+// Module-level persistent cache so the browser retains buffered streams across component unmounts
+const persistentMediaCache = new Set<HTMLVideoElement | HTMLAudioElement>();
+
 export function Preloader({ data, onComplete }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [statusMessage, setStatusMessage] = useState("Preparing Celebration...");
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    const mediaElementsToRetain: (HTMLVideoElement | HTMLAudioElement)[] = [];
 
     const loadAssets = async () => {
       // 1. Collect all images
@@ -22,7 +26,7 @@ export function Preloader({ data, onComplete }: PreloaderProps) {
       if (data.openingQuoteBgUrl) images.push(data.openingQuoteBgUrl);
       if (data.heroLogoUrl) images.push(data.heroLogoUrl);
       if (data.ogImageUrl) images.push(data.ogImageUrl);
-      images.push("/src/assets/ikonkar-gold.svg");
+      images.push("/ikonkar-gold.svg");
 
       if (data.gallery && Array.isArray(data.gallery)) {
         data.gallery.forEach((g) => {
@@ -72,6 +76,14 @@ export function Preloader({ data, onComplete }: PreloaderProps) {
       // Helper to preload an image and decode it into memory
       const preloadImg = (url: string): Promise<void> => {
         return new Promise((resolve) => {
+          // Check if it's already in the DOM (e.g. data-opening-thumbnail)
+          const existingImg = document.querySelector(`img[src="${url}"]`) as HTMLImageElement;
+          if (existingImg && existingImg.complete) {
+            step("Loading Visuals...");
+            resolve();
+            return;
+          }
+
           const img = new Image();
           let done = false;
           const finish = () => {
@@ -102,44 +114,64 @@ export function Preloader({ data, onComplete }: PreloaderProps) {
       };
 
       // Helper to preload video element and buffer initial frames
-      const preloadVid = (url: string): Promise<void> => {
+      const preloadVid = (url: string, isOpening = false): Promise<void> => {
         return new Promise((resolve) => {
-          const video = document.createElement("video");
-          video.preload = "auto";
-          video.muted = true;
-          video.playsInline = true;
-          mediaElementsToRetain.push(video);
+          // Look for live DOM video element (e.g., data-opening-video)
+          let video: HTMLVideoElement | null = null;
+          if (isOpening) {
+            video = document.querySelector('video[data-opening-video="true"]');
+          }
+          if (!video) {
+            video = document.querySelector(`video[src="${url}"]`);
+          }
+          if (!video) {
+            video = document.createElement("video");
+            video.preload = "auto";
+            video.muted = true;
+            video.playsInline = true;
+            video.src = url;
+          }
+
+          persistentMediaCache.add(video);
 
           let done = false;
           const finish = () => {
             if (!done) {
               done = true;
               cleanup();
-              step("Buffering Celebration Videos...");
+              step(isOpening ? "Readying Opening Video..." : "Buffering Celebration Videos...");
               resolve();
             }
           };
 
           const cleanup = () => {
-            video.removeEventListener("loadeddata", finish);
-            video.removeEventListener("canplay", finish);
-            video.removeEventListener("canplaythrough", finish);
-            video.removeEventListener("error", finish);
+            if (video) {
+              video.removeEventListener("loadeddata", finish);
+              video.removeEventListener("canplay", finish);
+              video.removeEventListener("canplaythrough", finish);
+              video.removeEventListener("error", finish);
+            }
           };
+
+          if (video.readyState >= 2) {
+            finish();
+            return;
+          }
 
           video.addEventListener("loadeddata", finish, { once: true });
           video.addEventListener("canplay", finish, { once: true });
           video.addEventListener("canplaythrough", finish, { once: true });
           video.addEventListener("error", finish, { once: true });
 
-          // Also attempt fetch in parallel so the browser caches the data stream
+          // Also attempt fetch in parallel so the browser caches the raw bytes
           fetch(url, { mode: "no-cors", cache: "force-cache" }).catch(() => {});
 
-          video.src = url;
-          video.load();
+          try {
+            video.load();
+          } catch (e) {}
 
-          // Safety timeout per video (8 seconds)
-          setTimeout(finish, 8000);
+          // Safety timeout per video
+          setTimeout(finish, isOpening ? 9000 : 7000);
         });
       };
 
@@ -148,7 +180,7 @@ export function Preloader({ data, onComplete }: PreloaderProps) {
         return new Promise((resolve) => {
           const audio = new Audio();
           audio.preload = "auto";
-          mediaElementsToRetain.push(audio);
+          persistentMediaCache.add(audio);
 
           let done = false;
           const finish = () => {
@@ -167,13 +199,20 @@ export function Preloader({ data, onComplete }: PreloaderProps) {
             audio.removeEventListener("error", finish);
           };
 
+          if (audio.readyState >= 2) {
+            finish();
+            return;
+          }
+
           audio.addEventListener("loadeddata", finish, { once: true });
           audio.addEventListener("canplay", finish, { once: true });
           audio.addEventListener("canplaythrough", finish, { once: true });
           audio.addEventListener("error", finish, { once: true });
 
           audio.src = url;
-          audio.load();
+          try {
+            audio.load();
+          } catch (e) {}
 
           setTimeout(finish, 6000);
         });
@@ -188,16 +227,29 @@ export function Preloader({ data, onComplete }: PreloaderProps) {
           step();
         });
 
-      // Run all preloading
+      // Prioritize Opening assets first
+      const openingAssetsPromises: Promise<void>[] = [];
+      if (data.openingThumbnailUrl) {
+        openingAssetsPromises.push(preloadImg(data.openingThumbnailUrl));
+      }
+      if (data.openingVideoUrl) {
+        openingAssetsPromises.push(preloadVid(data.openingVideoUrl, true));
+      }
+
+      // Other media promises
+      const otherImages = uniqueImages.filter((u) => u !== data.openingThumbnailUrl);
+      const otherVideos = uniqueVideos.filter((u) => u !== data.openingVideoUrl);
+
       const allPromises = [
-        ...uniqueImages.map(preloadImg),
-        ...uniqueVideos.map(preloadVid),
+        ...openingAssetsPromises,
+        ...otherImages.map(preloadImg),
+        ...otherVideos.map((v) => preloadVid(v, false)),
         ...uniqueAudios.map(preloadAud),
         fontsPromise,
       ];
 
-      // Master timeout: max 14 seconds so visitors on very slow connections never hang
-      const masterTimeout = new Promise<void>((resolve) => setTimeout(resolve, 14000));
+      // Master timeout: max 12 seconds so visitors on slow connections never freeze
+      const masterTimeout = new Promise<void>((resolve) => setTimeout(resolve, 12000));
 
       await Promise.race([Promise.all(allPromises), masterTimeout]);
 
@@ -205,7 +257,12 @@ export function Preloader({ data, onComplete }: PreloaderProps) {
         setProgress(100);
         setStatusMessage("Ready • Waheguru Ji Mehar Karan");
         setTimeout(() => {
-          if (isMounted) onComplete();
+          if (isMounted) {
+            setIsFadingOut(true);
+            setTimeout(() => {
+              if (isMounted) onComplete();
+            }, 400);
+          }
         }, 500);
       }
     };
@@ -214,28 +271,25 @@ export function Preloader({ data, onComplete }: PreloaderProps) {
 
     return () => {
       isMounted = false;
-      // Release media handles
-      mediaElementsToRetain.forEach((media) => {
-        try {
-          media.removeAttribute("src");
-          media.load();
-        } catch (e) {}
-      });
-      mediaElementsToRetain.length = 0;
     };
   }, [data, onComplete]);
 
   return (
-    <div className="fixed inset-0 z-[100000] flex flex-col items-center justify-center bg-blush-main px-6 select-none">
+    <div 
+      className={`fixed inset-0 z-[100000] flex flex-col items-center justify-center bg-blush-main px-6 select-none transition-opacity duration-400 ease-out ${
+        isFadingOut ? "opacity-0 pointer-events-none" : "opacity-100"
+      }`}
+    >
       <motion.div 
         animate={{ scale: [1, 1.06, 1] }}
         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         className="mb-6 flex flex-col items-center"
       >
-        <span className="text-5xl sm:text-6xl text-burgundy font-serif font-bold drop-shadow-sm select-none">
-          ੴ
-        </span>
-        <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-wine-dark/80 font-serif font-bold mt-2">
+        <IkOnkarSymbol 
+          customLogoUrl={data.heroLogoUrl}
+          className="h-20 sm:h-24 w-auto max-w-[180px] object-contain drop-shadow-md select-none"
+        />
+        <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-wine-dark/80 font-serif font-bold mt-3">
           Ik Onkar • Satgur Prasad
         </span>
       </motion.div>

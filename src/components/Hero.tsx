@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Heart, ArrowDown } from "lucide-react";
 import { WeddingData } from "../types";
+import { IkOnkarSymbol } from "./IkOnkarSymbol";
 import { useState, useRef, useEffect } from "react";
 
 interface HeroProps {
@@ -81,27 +82,13 @@ export function Hero({ data, shouldPlayVideo = true, onVideoEnd }: HeroProps) {
           >
             {/* Sacred Sikh Invocation / Background-Removed Religious Logo */}
             <div className="flex flex-col items-center mb-4">
-              {data.heroLogoUrl ? (
-                <div className="flex flex-col items-center">
-                  <img
-                    src={data.heroLogoUrl}
-                    alt="Waheguru / Sacred Logo"
-                    className="h-16 md:h-20 w-auto max-w-[200px] object-contain drop-shadow-md select-none pointer-events-none transition-transform duration-300"
-                  />
-                  <span className="text-[10px] tracking-[0.25em] uppercase text-wine-dark/85 font-serif mt-1.5 font-bold">
-                    Ik Onkar • Satgur Prasad
-                  </span>
-                </div>
-              ) : (
-                <>
-                  <span className="text-4xl text-wine-dark font-serif font-bold tracking-wider drop-shadow-sm select-none">
-                    ੴ
-                  </span>
-                  <span className="text-[10px] tracking-[0.25em] uppercase text-wine-dark/85 font-serif mt-1 font-bold">
-                    Ik Onkar • Satgur Prasad
-                  </span>
-                </>
-              )}
+              <IkOnkarSymbol
+                customLogoUrl={data.heroLogoUrl}
+                className="h-16 md:h-20 w-auto max-w-[200px] object-contain drop-shadow-md select-none pointer-events-none transition-transform duration-300"
+              />
+              <span className="text-[10px] tracking-[0.25em] uppercase text-wine-dark/85 font-serif mt-1.5 font-bold">
+                Ik Onkar • Satgur Prasad
+              </span>
             </div>
 
             {/* Elder / Grandmother's Invitation Callout */}

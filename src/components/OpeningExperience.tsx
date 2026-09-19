@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { WeddingData } from "../types";
+import { IkOnkarSymbol } from "./IkOnkarSymbol";
 import { ArrowRight, Sparkles, Heart } from "lucide-react";
 
 interface OpeningExperienceProps {
@@ -128,6 +129,7 @@ export function OpeningExperience({ data, onComplete }: OpeningExperienceProps) 
           {data.openingVideoUrl && (
             <video
               ref={openingVideoRef}
+              data-opening-video="true"
               src={data.openingVideoUrl}
               poster={data.openingThumbnailUrl}
               playsInline
@@ -149,8 +151,10 @@ export function OpeningExperience({ data, onComplete }: OpeningExperienceProps) 
               {/* Pure Thumbnail Image with NO background shades or dark tints */}
               {data.openingThumbnailUrl ? (
                 <img
+                  data-opening-thumbnail="true"
                   src={data.openingThumbnailUrl}
                   alt="Wedding Invitation Opening"
+                  loading="eager"
                   className="w-full h-full object-contain pointer-events-none"
                 />
               ) : (
@@ -171,9 +175,8 @@ export function OpeningExperience({ data, onComplete }: OpeningExperienceProps) 
           {/* Top Ik Onkar Header - 100% IDENTICAL ACROSS BOTH THUMBNAIL & VIDEO STAGES */}
           <div className="absolute top-6 sm:top-8 inset-x-0 flex flex-col items-center pointer-events-none z-30">
             <div className="flex flex-col items-center">
-              <img
-                src={omkarLogo}
-                alt="Ik Onkar"
+              <IkOnkarSymbol
+                customLogoUrl={data.heroLogoUrl}
                 className="h-16 sm:h-20 w-auto max-w-[150px] object-contain select-none"
               />
               <span className="text-[10.5px] uppercase tracking-[0.25em] text-wine-dark font-serif font-bold mt-1.5">

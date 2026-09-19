@@ -753,14 +753,14 @@ export function AdminPanel() {
                   <span className="text-xs font-semibold text-wine-dark font-sans">Quick Presets:</span>
                   <button
                     type="button"
-                    onClick={() => handleChange("heroLogoUrl", "/src/assets/ikonkar-gold.svg")}
+                    onClick={() => handleChange("heroLogoUrl", "/ikonkar-gold.svg")}
                     className="text-xs bg-white border border-pink-border px-2.5 py-1 rounded hover:bg-blush-light text-wine-dark font-sans transition-colors"
                   >
                     ੴ Golden Ik Onkar (SVG)
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleChange("heroLogoUrl", "/src/assets/khanda-gold.svg")}
+                    onClick={() => handleChange("heroLogoUrl", "/khanda-gold.svg")}
                     className="text-xs bg-white border border-pink-border px-2.5 py-1 rounded hover:bg-blush-light text-wine-dark font-sans transition-colors"
                   >
                     ⚔️ Golden Khanda Sahib (SVG)

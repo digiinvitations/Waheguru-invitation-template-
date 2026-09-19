@@ -21,7 +21,7 @@ export const weddingData: WeddingData = {
   openingVideoUrl: "https://www.image2url.com/r2/default/videos/1788010850590-27bb3d4c-eb70-4e57-8299-6bca19925158.mp4",
   openingQuoteBgUrl: "",
   heroVideoUrl: "https://www.image2url.com/r2/default/videos/1788011182513-3d74480d-c3ef-41df-926f-d21988765de3.mp4",
-  heroLogoUrl: "/src/assets/ikonkar-gold.svg",
+  heroLogoUrl: "/ikonkar-gold.svg",
   ogImageUrl: "https://i.ibb.co/whJhPT35/file-000000001e048211bb05770afd02bdae.png",
   heroMessage: "With the divine blessings of Sri Guru Granth Sahib Ji & Waheguru Ji,\nGrandmother Sdn. Jasmer Kaur cordially invites you to celebrate the Anand Karaj of",
   invitationMessage: "With the heavenly blessings of Sri Guru Granth Sahib Ji and our beloved elder Grandmother Sdn. Jasmer Kaur, the Gandhi family warmly invites you to celebrate the holy Anand Karaj and wedding festivities of Jaspreet & Jasmeet as they begin their sacred journey together in faith, love, and devotion.\n\nWe humbly request your gracious presence and blessings on this auspicious occasion.",

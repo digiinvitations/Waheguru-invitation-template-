@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="khandaGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0BA" />
+      <stop offset="25%" stop-color="#E5B94C" />
+      <stop offset="60%" stop-color="#C59324" />
+      <stop offset="85%" stop-color="#FCE196" />
+      <stop offset="100%" stop-color="#8F630C" />
+    </linearGradient>
+    <filter id="khandaShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.45" />
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#E5B94C" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <g filter="url(#khandaShadow)" fill="url(#khandaGold)" stroke="#6E4A05" stroke-width="1.2">
+    <!-- Double-edged central sword (Khanda) -->
+    <path d="M98 22 C98 20 102 20 102 22 L105 130 L108 132 L108 165 L92 165 L92 132 L95 130 Z" />
+    <polygon points="100,12 104,26 96,26" />
+    <!-- Chakra (Chakkar circle) -->
+    <path fill-rule="evenodd" d="M100 60 A 38 38 0 1 0 100 136 A 38 38 0 1 0 100 60 Z M100 74 A 24 24 0 1 1 100 122 A 24 24 0 1 1 100 74 Z" />
+    <!-- Left curved sword (Kirpan / Miri) -->
+    <path d="M72 65 C50 82 45 115 58 145 C66 163 80 174 88 178 C86 172 82 160 82 148 C82 125 92 108 102 100 C90 104 78 114 74 126 C66 108 72 85 86 72 Z" />
+    <!-- Right curved sword (Kirpan / Piri) -->
+    <path d="M128 65 C150 82 155 115 142 145 C134 163 120 174 112 178 C114 172 118 160 118 148 C118 125 108 108 98 100 C110 104 122 114 126 126 C134 108 128 85 114 72 Z" />
+    <!-- Pommel / Base hilt -->
+    <circle cx="100" cy="168" r="4" />
+  </g>
+</svg>
