@@ -1,5 +1,5 @@
-import { motion } from "motion/react";
 import { HeartDivider } from "./HeartDivider";
+import { FadeInSection } from "./FadeInSection";
 import { VenueDetails } from "../types";
 import { MapPin } from "lucide-react";
 
@@ -10,13 +10,7 @@ interface VenueProps {
 export function Venue({ venue }: VenueProps) {
   return (
     <section className="py-16 px-6 bg-blush-light flex flex-col items-center overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="w-full max-w-md flex flex-col items-center text-center relative"
-      >
+      <FadeInSection className="w-full max-w-md flex flex-col items-center text-center relative">
         <MapPin className="w-6 h-6 text-wine-dark mb-4 opacity-80" strokeWidth={1.5} />
         <h2 className="font-script text-4xl text-wine-dark">
           Venue
@@ -24,7 +18,7 @@ export function Venue({ venue }: VenueProps) {
         
         <HeartDivider />
 
-        <div className="mt-4 flex flex-col items-center relative z-10">
+        <FadeInSection delay={100} className="mt-4 flex flex-col items-center relative z-10">
           <span className="text-2xl text-wine-dark font-serif font-bold mb-1 select-none">ੴ</span>
           <h3 className="font-serif font-bold text-xl text-text-body mb-2">{venue.name}</h3>
           <p className="text-text-body text-sm opacity-85 max-w-[280px]">
@@ -32,10 +26,10 @@ export function Venue({ venue }: VenueProps) {
             <br />
             {venue.addressLine2}
           </p>
-        </div>
+        </FadeInSection>
 
         {/* Gurudwara Sahib Silhouette / Line Art */}
-        <div className="w-full max-w-[280px] h-28 mt-8 mb-6 opacity-30 flex items-end justify-center pointer-events-none">
+        <FadeInSection delay={150} className="w-full max-w-[280px] h-28 mt-8 mb-6 opacity-30 flex items-end justify-center pointer-events-none">
           <svg viewBox="0 0 200 90" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full stroke-wine-dark" strokeWidth="1.2">
             {/* Central Dome */}
             <path d="M100 8 C92 20 82 28 82 46 V85 H118 V46 C118 28 108 20 100 8 Z" />
@@ -64,10 +58,10 @@ export function Venue({ venue }: VenueProps) {
             <line x1="15" y1="85" x2="185" y2="85" strokeWidth="1.5" />
             <line x1="5" y1="89" x2="195" y2="89" strokeWidth="1" />
           </svg>
-        </div>
+        </FadeInSection>
 
         {/* Gurudwara Sahib Etiquette Guidelines */}
-        <div className="w-full max-w-sm my-6 p-5 rounded-2xl bg-white/70 border border-pink-border/80 shadow-xs text-left">
+        <FadeInSection delay={200} className="w-full max-w-sm my-6 p-5 rounded-2xl bg-white/70 border border-pink-border/80 shadow-xs text-left">
           <h4 className="font-serif font-bold text-xs uppercase tracking-[0.15em] text-wine-dark text-center mb-3.5 flex items-center justify-center gap-2">
             <span>ੴ</span> Gurudwara Sahib Etiquette <span>ੴ</span>
           </h4>
@@ -89,18 +83,20 @@ export function Venue({ venue }: VenueProps) {
               <span><strong>Sanctity:</strong> Tobacco, alcohol, and non-vegetarian items are strictly prohibited on the sacred premises.</span>
             </li>
           </ul>
-        </div>
+        </FadeInSection>
 
-        <a 
-          href={venue.mapUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-burgundy text-white px-8 py-3 rounded-full font-serif text-xs uppercase tracking-widest shadow-md hover:bg-wine-dark transition-colors active:scale-95 mt-2"
-        >
-          View on Google Maps
-        </a>
+        <FadeInSection delay={250} className="w-full flex justify-center">
+          <a 
+            href={venue.mapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-burgundy text-white px-8 py-3 rounded-full font-serif text-xs uppercase tracking-widest shadow-md hover:bg-wine-dark transition-colors active:scale-95 mt-2 inline-block"
+          >
+            View on Google Maps
+          </a>
+        </FadeInSection>
 
-      </motion.div>
+      </FadeInSection>
     </section>
   );
 }

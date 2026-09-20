@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { HeartDivider } from "./HeartDivider";
+import { FadeInSection } from "./FadeInSection";
 import { EventDetails } from "../types";
 import { Clock, MapPin, CalendarHeart, Calendar } from "lucide-react";
 
@@ -51,13 +52,7 @@ export function Timeline({ events }: TimelineProps) {
 
   return (
     <section className="py-16 px-4 md:px-6 bg-blush-main flex flex-col items-center overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="w-full max-w-3xl flex flex-col items-center"
-      >
+      <FadeInSection className="w-full max-w-3xl flex flex-col items-center">
         <CalendarHeart className="w-8 h-8 text-wine-dark mb-4 opacity-80" strokeWidth={1.5} />
         <h2 className="font-script text-4xl text-wine-dark text-center drop-shadow-sm">
           Program Timeline
@@ -83,12 +78,11 @@ export function Timeline({ events }: TimelineProps) {
             } catch(e) {}
 
             return (
-              <motion.div 
+              <FadeInSection 
                 key={item.id || index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: index * 0.1, type: "spring", bounce: 0.3 }}
+                delay={index * 80}
+                threshold={0.12}
+                rootMargin="0px 0px -40px 0px"
                 className={`mb-12 relative w-full flex flex-row items-start ${isEven ? 'justify-start' : 'justify-end'}`}
               >
                 {/* Center marker */}
@@ -126,11 +120,11 @@ export function Timeline({ events }: TimelineProps) {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </FadeInSection>
             );
           })}
         </div>
-      </motion.div>
+      </FadeInSection>
     </section>
   );
 }

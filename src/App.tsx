@@ -18,6 +18,7 @@ import { AdminPanel } from './components/AdminPanel';
 import { Preloader } from './components/Preloader';
 import { OpeningExperience } from './components/OpeningExperience';
 import { FallingPetals } from './components/FallingPetals';
+import { FadeInSection } from './components/FadeInSection';
 
 function PublicView() {
   const [data, setData] = useState<WeddingData | null>(null);
@@ -80,14 +81,29 @@ function PublicView() {
       {/* Main Content */}
       <main className="w-full min-h-[100svh] bg-blush-main relative overflow-hidden">
         <Hero data={data} shouldPlayVideo={viewState === 'main' && !isPreloading} onVideoEnd={() => setIsHeroEnded(true)} />
-        <InvitationMessage message={data.invitationMessage} isHeroEnded={isHeroEnded} />
+        <FadeInSection threshold={0.08} rootMargin="0px 0px -30px 0px">
+          <InvitationMessage message={data.invitationMessage} isHeroEnded={isHeroEnded} />
+        </FadeInSection>
         <ScratchCardSection data={data} onReveal={() => setIsScratched(true)} />
         {isScratched && <Countdown targetDate={data.weddingDate} />}
-        <Events events={data.events} />
-        <Timeline events={data.events} />
-        <Venue venue={data.venue} />
-        <RSVP data={data} />
-        <ClosingMessage data={data} />
+        
+        {/* Main Wedding Sections with IntersectionObserver fade-in animations */}
+        <FadeInSection threshold={0.05} rootMargin="0px 0px -30px 0px">
+          <Events events={data.events} />
+        </FadeInSection>
+        <FadeInSection threshold={0.05} rootMargin="0px 0px -30px 0px">
+          <Timeline events={data.events} />
+        </FadeInSection>
+        <FadeInSection threshold={0.05} rootMargin="0px 0px -30px 0px">
+          <Venue venue={data.venue} />
+        </FadeInSection>
+
+        <FadeInSection threshold={0.05} rootMargin="0px 0px -30px 0px">
+          <RSVP data={data} />
+        </FadeInSection>
+        <FadeInSection threshold={0.05} rootMargin="0px 0px -30px 0px">
+          <ClosingMessage data={data} />
+        </FadeInSection>
         <Footer data={data} />
       </main>
 

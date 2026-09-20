@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
 import { HeartDivider } from "./HeartDivider";
+import { FadeInSection } from "./FadeInSection";
 import { EventDetails } from "../types";
 import { PartyPopper, Calendar, MapPin, Sparkles, Heart, Clock, X } from "lucide-react";
 
@@ -466,13 +467,7 @@ export function Events({ events }: EventsProps) {
 
   return (
     <section className="py-20 px-4 sm:px-6 bg-blush-light flex flex-col items-center relative overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="w-full max-w-lg flex flex-col items-center"
-      >
+      <FadeInSection className="w-full max-w-lg flex flex-col items-center">
         <PartyPopper className="w-6 h-6 text-pink-accent mb-3 opacity-80" strokeWidth={1.5} />
         <h2 className="font-serif text-3xl md:text-4xl uppercase tracking-widest text-wine-dark text-center drop-shadow-sm font-bold">
           Wedding Ceremonies
@@ -486,12 +481,11 @@ export function Events({ events }: EventsProps) {
         {/* Timeline Stream */}
         <div className="w-full flex flex-col items-center mt-10">
           {sortedEvents.map((event, index) => (
-            <motion.div 
+            <FadeInSection 
               key={event.id || index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-30px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              delay={index * 100}
+              threshold={0.1}
+              rootMargin="0px 0px -30px 0px"
               className="w-full"
             >
               <TimelineEventNode 
@@ -499,10 +493,10 @@ export function Events({ events }: EventsProps) {
                 index={index} 
                 isLast={index === sortedEvents.length - 1} 
               />
-            </motion.div>
+            </FadeInSection>
           ))}
         </div>
-      </motion.div>
+      </FadeInSection>
     </section>
   );
 }
