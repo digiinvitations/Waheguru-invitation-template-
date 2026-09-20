@@ -32,7 +32,7 @@ export function InvitationMessage({ message, isHeroEnded }: InvitationMessagePro
             ਧਨ ਪਿਰੁ ਏਹਿ ਨ ਆਖੀਅਨਿ ਬਹਿਨਿ ਇਕਠੇ ਹੋਇ ॥<br />
             ਏਕ ਜੋਤਿ ਦੁਇ ਮੂਰਤੀ ਧਨ ਪਿਰੁ ਕਹੀਐ ਸੋਇ ॥
           </p>
-          <p className="font-serif text-xs md:text-sm text-[#5D4147] italic leading-relaxed mt-2 opacity-90">
+          <p className="font-serif text-sm sm:text-[15px] text-[#5D4147] italic leading-relaxed mt-2.5 opacity-95 font-medium">
             &ldquo;They are not said to be husband and wife who merely sit together. Rather, they alone are called husband and wife, who have one soul in two bodies.&rdquo;
           </p>
           <p className="text-[10px] uppercase tracking-[0.2em] text-[#8F1736] font-semibold mt-2.5 opacity-80 font-serif">

@@ -39,6 +39,21 @@ const getEventQuote = (event: EventDetails) => {
   return "ਹਰਿ ਪ੍ਰਭੁ ਕਾਜੁ ਰਚਾਇਆ ॥\nਗੁਰਮੁਖਿ ਵੀਆਹਣੁ ਆਇਆ ॥";
 };
 
+// English spiritual explanations for the Gurbani quotes
+const getEventQuoteExplanation = (event: EventDetails) => {
+  const quote = getEventQuote(event);
+  if (quote.includes("ਏਕ ਜੋਤਿ") || quote.includes("ਧਨ ਪਿਰੁ")) {
+    return "“They are not husband and wife who merely sit together. Truly united are they who have one light in two bodies.”";
+  }
+  if (quote.includes("ਕਾਜੁ ਰਚਾਇਆ") || quote.includes("ਗੁਰਮੁਖਿ")) {
+    return "“The Lord God has orchestrated this blessed union; by the Guru’s grace, the sacred wedding day has arrived.”";
+  }
+  if (quote.includes("ਤੂ ਸਮਰਥੁ") || quote.includes("ਨਾਨਕ ਕੀ ਅਰਦਾਸਿ")) {
+    return "“You are all-powerful and boundless; body and soul are Your gifts. By Your grace we find peace; this is forever our prayer.”";
+  }
+  return "“With the grace and divine blessings of the Almighty, two souls unite as one on this sacred path of love and devotion.”";
+};
+
 // Robust chronological date parser
 const parseEventDateTime = (dateStr: string, timeStr: string): number => {
   if (!dateStr) return 0;
@@ -271,6 +286,7 @@ function TimelineEventNode({
 
   const emoji = getEventEmoji(event.title, index);
   const quote = getEventQuote(event);
+  const quoteExplanation = getEventQuoteExplanation(event);
   const displayDate = formatDisplayDate(event.date);
   const { dayOfWeek, dateFormatted } = formatSystematicDate(event.date);
   const isWeddingCeremony = 
@@ -293,27 +309,71 @@ function TimelineEventNode({
       {/* Ceremony Details Card */}
       <div className="w-full max-w-sm flex flex-col items-center text-center mt-3 mb-2 px-2">
         {/* Event Heading - ALWAYS VISIBLE */}
-        <h3 className="font-script text-4xl sm:text-5xl text-burgundy mb-1.5 drop-shadow-2xs">
+        <h3 className="font-script text-4xl sm:text-5xl text-burgundy mb-2 drop-shadow-2xs">
           {event.title}
         </h3>
 
-        {/* Systematic Date & Time Display - Prominent, larger size & systematic layout */}
-        <div className={`w-full my-3 p-4 sm:p-5 rounded-2xl bg-white/95 border shadow-2xs backdrop-blur-xs flex flex-col items-center gap-2.5 ${
+        {/* 1. Sacred Gurbani Quote - Placed FIRST as requested */}
+        <div className="w-full my-2.5 px-5 sm:px-6 py-4 sm:py-5 rounded-2xl bg-white/90 border border-pink-border/90 shadow-2xs backdrop-blur-xs text-center relative overflow-hidden">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="h-[1px] w-6 bg-pink-accent/40" />
+            <span className="font-serif text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-[#8F1736] font-bold">
+              ੴ Sacred Gurbani Blessing • Ceremony {index + 1} ੴ
+            </span>
+            <div className="h-[1px] w-6 bg-pink-accent/40" />
+          </div>
+
+          {/* Gurmukhi Tuk */}
+          <p className="font-serif text-base sm:text-lg md:text-xl text-burgundy leading-relaxed whitespace-pre-line font-bold drop-shadow-2xs">
+            {quote}
+          </p>
+
+          {/* English Spiritual Explanation - Slightly more large font for effortless readability */}
+          {quoteExplanation && (
+            <p className="font-serif text-[14.5px] sm:text-[16px] md:text-[16.5px] italic text-wine-dark leading-relaxed font-medium mt-3 pt-3 border-t border-pink-border/50 max-w-sm mx-auto drop-shadow-2xs">
+              {quoteExplanation}
+            </p>
+          )}
+        </div>
+
+        {/* 2. Venue, Systematic Date & Time Display - Placed BELOW quote */}
+        <div className={`w-full my-2.5 p-4 sm:p-5 rounded-2xl bg-white/95 border shadow-2xs backdrop-blur-xs flex flex-col items-center gap-3 ${
           isWeddingCeremony 
             ? 'border-[#D9A6B2] ring-2 ring-[#D9A6B2]/40 bg-gradient-to-b from-white to-[#FDF4F6]' 
             : 'border-pink-border/90'
         }`}>
           {isWeddingCeremony && (
-            <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#8F1736] text-white shadow-2xs">
-              <span className="font-serif text-[10px] font-bold uppercase tracking-widest">
+            <div className="flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#8F1736] text-white shadow-2xs">
+              <span className="font-serif text-[11px] font-bold uppercase tracking-widest">
                 ੴ Sacred Anand Karaj Ceremony ੴ
               </span>
             </div>
           )}
 
+          {/* Venue Line */}
+          <div className="w-full pb-2.5 border-b border-pink-border/50 flex flex-col items-center justify-center gap-1 text-center">
+            <div className="flex items-center justify-center gap-1.5 text-xs sm:text-[13px] font-serif uppercase tracking-widest text-[#A92543] font-bold">
+              <MapPin className="w-3.5 h-3.5 text-pink-accent flex-shrink-0" />
+              <span>Ceremony Venue</span>
+            </div>
+            <span className="text-sm sm:text-base font-serif font-bold text-burgundy leading-snug">
+              {event.location}
+            </span>
+            {event.mapUrl && (
+              <a 
+                href={event.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-0.5 inline-flex items-center gap-1 text-[11px] sm:text-xs font-serif text-pink-accent hover:text-burgundy underline underline-offset-2 font-medium"
+              >
+                <span>Get Venue Directions</span>
+              </a>
+            )}
+          </div>
+
           {/* Systematic 2-Column Date & Time Grid */}
-          <div className="w-full grid grid-cols-2 gap-3 text-center items-center py-1">
-            {/* Date Column - Significantly larger & bold for maximum visibility */}
+          <div className="w-full grid grid-cols-2 gap-3 text-center items-center py-0.5">
+            {/* Date Column - Prominently sized & bold */}
             <div className="flex flex-col items-center justify-center border-r border-pink-border/60 pr-2">
               <div className="flex items-center gap-1.5 text-pink-accent mb-1">
                 <Calendar className="w-4 h-4 text-pink-accent flex-shrink-0" />
@@ -339,26 +399,6 @@ function TimelineEventNode({
               </span>
             </div>
           </div>
-
-          {/* Location Line */}
-          <div className="w-full pt-2.5 border-t border-pink-border/40 flex items-center justify-center gap-1.5 text-xs sm:text-sm font-serif text-wine-dark/90 text-center font-medium">
-            <MapPin className="w-3.5 h-3.5 text-pink-accent flex-shrink-0" />
-            <span className="leading-snug">{event.location}</span>
-          </div>
-        </div>
-
-        {/* Sacred Quote - Always Visible */}
-        <div className="w-full my-3 px-5 py-3.5 rounded-2xl bg-white/85 border border-pink-border/90 shadow-2xs backdrop-blur-xs text-center relative overflow-hidden">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <div className="h-[1px] w-6 bg-pink-accent/40" />
-            <span className="font-serif text-[9px] sm:text-[10px] uppercase tracking-[0.25em] text-wine-dark/70 font-bold">
-              ੴ Sacred Blessing • Ceremony {index + 1} ੴ
-            </span>
-            <div className="h-[1px] w-6 bg-pink-accent/40" />
-          </div>
-          <p className="font-serif text-[13px] sm:text-[14px] text-wine-dark leading-relaxed whitespace-pre-line font-medium drop-shadow-2xs italic">
-            “ {quote} ”
-          </p>
         </div>
 
         {/* Press and Hold Button */}

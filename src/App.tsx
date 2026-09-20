@@ -17,6 +17,7 @@ import { WeddingData } from './types';
 import { AdminPanel } from './components/AdminPanel';
 import { Preloader } from './components/Preloader';
 import { OpeningExperience } from './components/OpeningExperience';
+import { FallingPetals } from './components/FallingPetals';
 
 function PublicView() {
   const [data, setData] = useState<WeddingData | null>(null);
@@ -70,6 +71,9 @@ function PublicView() {
   return (
     <div className={`w-full bg-blush-main relative mx-auto max-w-md shadow-2xl overflow-hidden sm:my-0 ${viewState !== 'main' ? 'h-[100svh]' : 'min-h-[100svh]'}`}>
       
+      {/* Falling Flower Petals Ambient Overlay throughout the entire app */}
+      <FallingPetals />
+
       {/* Website Background Music starts when viewState transitions to 'main' */}
       <MusicControl musicUrl={data.musicUrl} shouldPlay={viewState === 'main' && !isPreloading} />
 

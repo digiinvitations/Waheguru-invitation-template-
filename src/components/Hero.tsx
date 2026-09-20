@@ -91,10 +91,13 @@ export function Hero({ data, shouldPlayVideo = true, onVideoEnd }: HeroProps) {
               </span>
             </div>
 
-            {/* Elder / Grandmother's Invitation Callout */}
-            <div className="mb-3.5 px-4 py-1.5 rounded-full bg-white/95 border border-pink-border shadow-2xs backdrop-blur-xs flex items-center justify-center">
-              <span className="text-[11px] sm:text-xs font-serif font-bold text-burgundy tracking-wider uppercase">
-                Invitation by {data.invitedBy || "Grandmother Sdn. Jasmer Kaur"}
+            {/* Elder / Grandmother's Invitation Callout - Big & Bold */}
+            <div className="mb-4 px-5 py-2.5 rounded-2xl bg-white/95 border border-pink-border/90 shadow-2xs backdrop-blur-xs flex flex-col items-center justify-center text-center">
+              <span className="text-[10px] sm:text-[11px] font-serif uppercase tracking-[0.25em] text-wine-dark/75 font-semibold mb-0.5">
+                Cordially Invited By
+              </span>
+              <span className="text-base sm:text-lg md:text-xl font-serif font-extrabold text-burgundy tracking-wide leading-snug drop-shadow-2xs">
+                Grandmother Sdn. Jasmer Kaur
               </span>
             </div>
 
@@ -119,10 +122,12 @@ export function Hero({ data, shouldPlayVideo = true, onVideoEnd }: HeroProps) {
             <h1 className="font-script text-6xl text-wine-dark drop-shadow-sm leading-none">
               {data.bride.name}
             </h1>
-            <div className="font-serif text-[12px] text-wine-dark/85 flex flex-col items-center gap-1 mt-2 mb-5 font-normal">
-              <p>{data.bride.parents}</p>
-              {data.bride.education && <p>{data.bride.education}</p>}
-              {data.bride.profession && <p>{data.bride.profession}</p>}
+            <div className="font-serif flex flex-col items-center gap-1 mt-2.5 mb-5 text-center px-2">
+              <p className="text-sm sm:text-base md:text-[17px] font-bold text-burgundy tracking-wide leading-snug max-w-[340px]">
+                {data.bride.parents}
+              </p>
+              {data.bride.education && <p className="text-xs text-wine-dark/80">{data.bride.education}</p>}
+              {data.bride.profession && <p className="text-xs text-wine-dark/80">{data.bride.profession}</p>}
             </div>
             
             <span className="font-script text-3xl text-pink-accent my-1">&amp;</span>
@@ -131,10 +136,12 @@ export function Hero({ data, shouldPlayVideo = true, onVideoEnd }: HeroProps) {
             <h1 className="font-script text-6xl text-wine-dark drop-shadow-sm leading-none mt-3">
               {data.groom.name}
             </h1>
-            <div className="font-serif text-[12px] text-wine-dark/85 flex flex-col items-center gap-1 mt-2 font-normal">
-              <p>{data.groom.parents}</p>
-              {data.groom.education && <p>{data.groom.education}</p>}
-              {data.groom.profession && <p>{data.groom.profession}</p>}
+            <div className="font-serif flex flex-col items-center gap-1 mt-2.5 text-center px-2">
+              <p className="text-sm sm:text-base md:text-[17px] font-bold text-burgundy tracking-wide leading-snug max-w-[340px]">
+                {data.groom.parents}
+              </p>
+              {data.groom.education && <p className="text-xs text-wine-dark/80">{data.groom.education}</p>}
+              {data.groom.profession && <p className="text-xs text-wine-dark/80">{data.groom.profession}</p>}
             </div>
           </motion.div>
         </div>

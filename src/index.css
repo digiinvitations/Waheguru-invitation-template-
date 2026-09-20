@@ -31,3 +31,91 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-pink-accent;
 }
+
+/* ==========================================================
+   Falling Flower Petals Ambient Animations
+   ========================================================== */
+@keyframes petalFall {
+  0% {
+    transform: translate3d(0, -60px, 0);
+    opacity: 0;
+  }
+  6% {
+    opacity: var(--petal-max-opacity, 0.75);
+  }
+  92% {
+    opacity: var(--petal-max-opacity, 0.75);
+  }
+  100% {
+    transform: translate3d(var(--petal-drift, 20px), 106vh, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes petalSwayA {
+  0%, 100% {
+    transform: translateX(0) rotateZ(0deg) rotateY(0deg) rotateX(0deg);
+  }
+  25% {
+    transform: translateX(22px) rotateZ(35deg) rotateY(60deg) rotateX(20deg);
+  }
+  50% {
+    transform: translateX(-16px) rotateZ(-25deg) rotateY(180deg) rotateX(10deg);
+  }
+  75% {
+    transform: translateX(30px) rotateZ(42deg) rotateY(240deg) rotateX(32deg);
+  }
+}
+
+@keyframes petalSwayB {
+  0%, 100% {
+    transform: translateX(0) rotateZ(0deg) rotateY(0deg) rotateX(0deg);
+  }
+  25% {
+    transform: translateX(-26px) rotateZ(-40deg) rotateY(80deg) rotateX(15deg);
+  }
+  50% {
+    transform: translateX(20px) rotateZ(30deg) rotateY(190deg) rotateX(-20deg);
+  }
+  75% {
+    transform: translateX(-22px) rotateZ(-35deg) rotateY(300deg) rotateX(25deg);
+  }
+}
+
+@keyframes petalSwayC {
+  0%, 100% {
+    transform: translateX(0) rotateZ(0deg) rotateY(0deg) rotateX(0deg);
+  }
+  30% {
+    transform: translateX(34px) rotateZ(55deg) rotateY(130deg) rotateX(35deg);
+  }
+  70% {
+    transform: translateX(-30px) rotateZ(-50deg) rotateY(270deg) rotateX(-30deg);
+  }
+}
+
+.petal-sway-a {
+  animation: petalSwayA 4.8s ease-in-out infinite;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.petal-sway-b {
+  animation: petalSwayB 5.6s ease-in-out infinite;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.petal-sway-c {
+  animation: petalSwayC 6.4s ease-in-out infinite;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal-sway-a,
+  .petal-sway-b,
+  .petal-sway-c {
+    animation: none;
+  }
+}

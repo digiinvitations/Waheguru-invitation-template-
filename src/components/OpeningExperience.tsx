@@ -275,12 +275,12 @@ export function OpeningExperience({ data, onComplete }: OpeningExperienceProps) 
                   ਗੁਰਮੁਖਿ ਵੀਆਹਣੁ ਆਇਆ ॥
                 </motion.h2>
 
-                {/* English Spiritual Meaning */}
+                {/* English Spiritual Meaning - Sized up for clear readability */}
                 <motion.p
                   initial={{ opacity: 0 }}
-                  animate={quoteRevealed ? { opacity: 0.85 } : { opacity: 0 }}
+                  animate={quoteRevealed ? { opacity: 0.95 } : { opacity: 0 }}
                   transition={{ duration: 1.0, delay: 1.2 }}
-                  className="font-serif text-[12px] italic text-wine-dark/80 max-w-xs leading-relaxed pt-1"
+                  className="font-serif text-sm sm:text-base italic text-wine-dark/90 max-w-sm leading-relaxed pt-2 font-medium"
                 >
                   “God has solemnized this sacred union; by the Guru’s grace, the blessed wedding day has arrived.”
                 </motion.p>
