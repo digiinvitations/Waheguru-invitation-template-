@@ -5,8 +5,11 @@ import {
   saveWeddingData, 
   getEnvironmentDocId, 
   isOfficialInstance,
-  setCustomSlotId 
+  setCustomSlotId,
+  CANONICAL_DOC_ID 
 } from "../services/db";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 import { WeddingData } from "../types";
 import { 
   Save, 
@@ -91,6 +94,9 @@ export function AdminPanel() {
       const keys = path.split('.');
       let current = updated;
       for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+          current[keys[i]] = {};
+        }
         current = current[keys[i]];
       }
       current[keys[keys.length - 1]] = value;
@@ -352,14 +358,52 @@ export function AdminPanel() {
     URL.revokeObjectURL(url);
   };
 
-  const handleUpdateCustomSlot = () => {
-    if (!customSlotInput.trim()) {
+  const handleUpdateCustomSlot = async () => {
+    const raw = customSlotInput.trim();
+    if (!raw) {
       setCustomSlotId("");
-      alert("Reset to automatic slot identification.");
-    } else {
-      setCustomSlotId(customSlotInput.trim());
-      alert(`Database slot updated to: ${customSlotInput.trim()}`);
+      alert("Reset to automatic isolated slot identification.");
+      window.location.reload();
+      return;
     }
+    const cleanSlot = raw.replace(/[\/\s#?\[\]]/g, "_");
+    setCustomSlotId(cleanSlot);
+    if (data) {
+      try {
+        setSaving(true);
+        await saveWeddingData(data);
+      } catch (e) {
+        console.warn("Could not save to new slot immediately:", e);
+      } finally {
+        setSaving(false);
+      }
+    }
+    alert(`Database slot updated to: ${cleanSlot}\nThis website will now store all data and RSVPs in this isolated slot.`);
+    window.location.reload();
+  };
+
+  const handleResetToTemplate = async () => {
+    if (!window.confirm("Load master template into this slot? This will copy all default Sikh wedding invitation events, texts, and media into this remix.")) return;
+    try {
+      setSaving(true);
+      const canonicalRef = doc(db, "weddingConfig", CANONICAL_DOC_ID);
+      const canonicalSnap = await getDoc(canonicalRef);
+      if (canonicalSnap.exists()) {
+        const fresh = canonicalSnap.data() as WeddingData;
+        setData(fresh);
+        await saveWeddingData(fresh);
+        alert("Template successfully loaded and saved into your remix slot!");
+      }
+    } catch (e) {
+      console.error("Error loading template:", e);
+      alert("Failed to load template. Please check your network connection.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSwitchToSlot = (slotId: string) => {
+    setCustomSlotId(slotId);
     window.location.reload();
   };
 
@@ -423,7 +467,7 @@ export function AdminPanel() {
 
         <div className="space-y-8">
 
-          {/* HOSTING & VERCEL SYNCHRONIZATION STATUS BANNER */}
+          {/* HOSTING & ISOLATED DATABASE STATUS BANNER */}
           <div className="bg-gradient-to-r from-pink-50 to-blush-light rounded-xl p-5 border border-pink-border/70 shadow-xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-start gap-3">
@@ -432,76 +476,120 @@ export function AdminPanel() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-bold text-wine-dark text-sm">Cloud Database & Hosting Synchronization</h3>
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                      Vercel & Previews Synced
+                    <h3 className="font-bold text-wine-dark text-sm">
+                      {isOfficial ? "Master Website Cloud Database" : "Remix Isolated Cloud Database"}
+                    </h3>
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
+                      isOfficial 
+                        ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                        : "bg-purple-100 text-purple-800 border-purple-300"
+                    }`}>
+                      {isOfficial ? "Official Master Slot" : "Isolated Remix Slot (No Overlap)"}
                     </span>
                   </div>
                   <p className="text-xs text-text-body/80 mt-1 font-sans">
-                    Active Storage Document: <code className="bg-white/80 px-1.5 py-0.5 rounded border border-pink-border/50 text-wine-dark font-mono text-[11px]">{currentSlot}</code>
+                    Active Storage Document: <code className="bg-white/80 px-1.5 py-0.5 rounded border border-pink-border/50 text-wine-dark font-mono text-[11px] font-bold">{currentSlot}</code>
                   </p>
-                  <p className="text-xs text-text-body/70 mt-0.5 font-sans">
-                    All updates saved in this Admin Panel are automatically synchronized across your Vercel hosting link (<code className="font-mono text-[11px]">*.vercel.app</code>) and AI Studio previews in real-time.
+                  <p className="text-xs text-text-body/70 mt-0.5 font-sans max-w-xl">
+                    {isOfficial 
+                      ? "You are managing the primary invitation for Jasmeet & Jaspreet. Saves update the canonical cloud storage and official links."
+                      : "This remixed website has its own dedicated, isolated Firestore slot. All details, media files, quotes, and guest RSVPs you save here are stored completely separately and will never overlap or overwrite the original website."
+                    }
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 self-end sm:self-center">
-                <button
-                  type="button"
-                  onClick={async () => {
-                    if (!data) return;
-                    setSaving(true);
-                    try {
-                      await saveWeddingData(data);
-                      alert("Successfully synchronized data to Vercel hosting and all database slots!");
-                    } catch (e) {
-                      console.error(e);
-                      alert("Sync error. Please try again.");
-                    } finally {
-                      setSaving(false);
-                    }
-                  }}
-                  disabled={saving}
-                  className="bg-wine-dark hover:bg-burgundy text-white text-xs px-3 py-1.5 rounded-lg shadow-xs transition-colors flex items-center gap-1.5 font-sans"
-                >
-                  <Save className="w-3.5 h-3.5" />
-                  Sync to Vercel
-                </button>
+                {isOfficial && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!data) return;
+                      setSaving(true);
+                      try {
+                        await saveWeddingData(data);
+                        alert("Successfully synchronized data to Vercel hosting and official master slots!");
+                      } catch (e) {
+                        console.error(e);
+                        alert("Sync error. Please try again.");
+                      } finally {
+                        setSaving(false);
+                      }
+                    }}
+                    disabled={saving}
+                    className="bg-wine-dark hover:bg-burgundy text-white text-xs px-3 py-1.5 rounded-lg shadow-xs transition-colors flex items-center gap-1.5 font-sans"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    Sync to Vercel
+                  </button>
+                )}
                 <button 
                   type="button"
                   onClick={() => setShowSlotSettings(!showSlotSettings)}
                   className="text-xs text-wine-dark underline hover:text-burgundy font-sans"
                 >
-                  {showSlotSettings ? "Hide Options" : "Options"}
+                  {showSlotSettings ? "Hide Options" : "Slot Settings"}
                 </button>
               </div>
             </div>
 
             {showSlotSettings && (
-              <div className="mt-4 pt-4 border-t border-pink-border/40 font-sans text-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                <span className="text-text-body/80 font-medium">Custom Database Slot ID:</span>
-                <input 
-                  type="text"
-                  placeholder="e.g. wedding_client_2027"
-                  value={customSlotInput}
-                  onChange={(e) => setCustomSlotInput(e.target.value)}
-                  className="bg-white border border-pink-border rounded px-2.5 py-1.5 text-xs flex-1 max-w-xs focus:outline-none focus:border-pink-accent"
-                />
-                <button
-                  type="button"
-                  onClick={handleUpdateCustomSlot}
-                  className="bg-wine-dark text-white px-3 py-1.5 rounded text-xs hover:bg-burgundy transition-colors"
-                >
-                  Apply Slot
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setCustomSlotId(""); window.location.reload(); }}
-                  className="bg-white border border-pink-border text-wine-dark px-3 py-1.5 rounded text-xs hover:bg-blush-light transition-colors"
-                >
-                  Reset to Auto
-                </button>
+              <div className="mt-4 pt-4 border-t border-pink-border/40 font-sans text-xs space-y-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <span className="text-text-body/80 font-medium whitespace-nowrap">Custom Slot Name:</span>
+                  <input 
+                    type="text"
+                    placeholder="e.g. wedding_amrita_weds_harpreet"
+                    value={customSlotInput}
+                    onChange={(e) => setCustomSlotInput(e.target.value)}
+                    className="bg-white border border-pink-border rounded px-2.5 py-1.5 text-xs flex-1 max-w-xs focus:outline-none focus:border-pink-accent"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleUpdateCustomSlot}
+                    className="bg-wine-dark text-white px-3 py-1.5 rounded text-xs hover:bg-burgundy transition-colors font-medium"
+                  >
+                    Apply & Save Current Data
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setCustomSlotId(""); window.location.reload(); }}
+                    className="bg-white border border-pink-border text-wine-dark px-3 py-1.5 rounded text-xs hover:bg-blush-light transition-colors"
+                  >
+                    Reset to Auto
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap pt-1">
+                  <span className="text-text-body/70 text-[11px] font-medium">Quick Preset Slots:</span>
+                  <button
+                    type="button"
+                    onClick={() => handleSwitchToSlot(CANONICAL_DOC_ID)}
+                    className={`px-2.5 py-1 rounded text-[11px] border font-mono transition-colors ${
+                      currentSlot === CANONICAL_DOC_ID 
+                        ? "bg-emerald-700 text-white border-emerald-700 font-bold shadow-xs" 
+                        : "bg-white text-wine-dark border-pink-border hover:bg-blush-light"
+                    }`}
+                  >
+                    Official Master Slot
+                  </button>
+                </div>
+
+                {!isOfficial && (
+                  <div className="pt-2 border-t border-pink-border/30 flex items-center justify-between gap-2 flex-wrap">
+                    <span className="text-text-body/70 text-[11px]">
+                      Want to restart with default Sikh invitation text and assets?
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleResetToTemplate}
+                      disabled={saving}
+                      className="bg-white border border-pink-border text-wine-dark hover:bg-pink-50 px-2.5 py-1 rounded text-xs transition-colors"
+                    >
+                      Clone Master Template
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -876,13 +964,14 @@ export function AdminPanel() {
   );
 }
 
-function Input({ label, value, onChange, type = "text" }: { label: string, value: string, onChange: (v: string) => void, type?: string }) {
+function Input({ label, value, onChange, type = "text", placeholder }: { label: string, value: string, onChange: (v: string) => void, type?: string, placeholder?: string }) {
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs font-semibold uppercase tracking-widest opacity-70">{label}</label>
       <input 
         type={type}
         value={value}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         className="w-full bg-white border border-pink-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-pink-accent focus:ring-1 focus:ring-pink-accent"
       />
@@ -890,13 +979,14 @@ function Input({ label, value, onChange, type = "text" }: { label: string, value
   );
 }
 
-function TextArea({ label, value, onChange }: { label: string, value: string, onChange: (v: string) => void }) {
+function TextArea({ label, value, onChange, placeholder }: { label: string, value: string, onChange: (v: string) => void, placeholder?: string }) {
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs font-semibold uppercase tracking-widest opacity-70">{label}</label>
       <textarea 
         rows={4}
         value={value}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         className="w-full bg-white border border-pink-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-pink-accent focus:ring-1 focus:ring-pink-accent resize-y"
       />

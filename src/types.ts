@@ -63,3 +63,4 @@ export interface WeddingData {
   rsvpAddress?: string;
   rsvpPhones?: string[];
 }
+

@@ -18,7 +18,7 @@ export const weddingData: WeddingData = {
   weddingTimeFormatted: "11:30 AM",
   weddingDayFormatted: "Wednesday",
   openingThumbnailUrl: "https://i.ibb.co/QFc6pvCg/file-0000000069488211b334f24889ba09e4.png",
-  openingVideoUrl: "https://www.image2url.com/r2/default/videos/1788010850590-27bb3d4c-eb70-4e57-8299-6bca19925158.mp4",
+  openingVideoUrl: "https://www.image2url.com/r2/default/videos/1789822620041-347bc615-25d0-47b0-9751-ff442ae2efd0.mp4",
   openingQuoteBgUrl: "https://www.image2url.com/r2/default/images/1789753560806-91d72d64-653d-41d5-aa18-67be49756721.jpg",
   heroVideoUrl: "https://www.image2url.com/r2/default/videos/1788011182513-3d74480d-c3ef-41df-926f-d21988765de3.mp4",
   heroLogoUrl: "/ikonkar-gold.svg",
@@ -32,67 +32,39 @@ export const weddingData: WeddingData = {
   events: [
     {
       id: "ev1",
-      title: "Haldi Ceremony",
+      title: "Haldi, Gadholi & Sangeet Ceremony",
       date: "Nov 10, 2026",
-      time: "12:00 PM",
+      time: "Haldi: 12:30 PM & Lunch: 1:00 PM • Ghadoli: 4:00 PM • Sangeet: 8:00 PM",
       location: "Orchha River Stone Resort, MP",
       mapUrl: "https://maps.app.goo.gl/9gwG8qpYAZz97mko8?g_st=ac",
       quote: "ਧਨ ਪਿਰੁ ਏਹਿ ਨ ਆਖੀਅਨਿ ਬਹਨਿ ਇਕਠੇ ਹੋਇ ॥\nਏਕ ਜੋਤਿ ਦੁਇ ਮੂਰਤੀ ਧਨ ਪਿਰੁ ਕਹੀਐ ਸੋਇ ||",
-      videoUrl: "https://www.image2url.com/r2/default/videos/1788110638012-da72db7f-13ba-442b-9a43-7fe583bdb28c.mp4",
-    },
-    {
-      id: "ev2",
-      title: "Sangeet Ceremony",
-      date: "Nov 10, 2026",
-      time: "8:00 PM",
-      location: "Orchha River Stone Resort, MP",
-      mapUrl: "https://maps.app.goo.gl/9gwG8qpYAZz97mko8?g_st=ac",
-      quote: "ਹਰਿ ਪ੍ਰਭੁ ਕਾਜੁ ਰਚਾਇਆ ॥\nਗੁਰਮੁਖਿ ਵੀਆਹਣੁ ਆਇਆ ॥",
-      videoUrl: "https://www.image2url.com/r2/default/videos/1788110669827-6e25a2d4-258f-40e3-b917-8c7360ebfb42.mp4",
+      videoUrl: "https://www.image2url.com/r2/default/videos/1789822620041-347bc615-25d0-47b0-9751-ff442ae2efd0.mp4",
     },
     {
       id: "ev3",
       title: "Wedding Ceremony",
       date: "Nov 11, 2026",
-      time: "11:30 AM",
+      time: "Anand Karaj:- 11:30 AM, Lunch at Orchha:- 2 PM",
       location: "Gurudwara Shri Guru Singh Sabha, Sipri Bazar, Jhansi, UP",
-      mapUrl: "https://maps.app.goo.gl/9gwG8qpYAZz97mko8?g_st=ac",
+      mapUrl: "https://maps.app.goo.gl/HeytYk3xKT8T5RLm8?g_st=ac",
       quote: "ਹਰਿ ਪ੍ਰਭੁ ਕਾਜੁ ਰਚਾਇਆ ॥\nਗੁਰਮੁਖਿ ਵੀਆਹਣੁ ਆਇਆ ॥",
       videoUrl: "https://www.image2url.com/r2/default/videos/1788110729435-449d9665-1970-450a-a6e6-7afc70798877.mp4",
-    },
-    {
-      id: "1789751123098",
-      title: "Kirtan Darbar",
-      date: "2026-11-02",
-      time: "10:30 to 1:30",
-      location: "VENUE: -  Bhai banno sahib gurdwara GT road kanpur",
-      mapUrl: "https://maps.app.goo.gl/qyoAP44gG1jrbrvn8?g_st=ac",
-      description: "Guru ka langar ",
-      quote: "ਤੂ ਸਮਰਥੁ ਅਕਥੁ ਅਗੋਚਰੁ ਜੀਉ ਪਿੰਡੁ ਤੇਰੀ ਰਾਸਿ ॥\nਰਹਮ ਤੇਰੀ ਸੁਖੁ ਪਾਇਆ ਸਦਾ ਨਾਨਕ ਕੀ ਅਰਦਾਸਿ ॥",
-      videoUrl: "https://www.image2url.com/r2/default/videos/1789754508244-02817786-afd1-4ea9-bdbd-88bbb0eb33ae.mp4",
     }
   ],
   timeline: [
     {
       id: "tl1",
-      title: "Haldi Ceremony",
+      title: "Haldi, Gadholi & Sangeet Ceremony",
       date: "Nov 10, 2026",
-      time: "12:00 PM",
-      description: "Join us for an auspicious Haldi ceremony at Orchha River Stone Resort."
+      time: "Haldi: 12:30 PM & Lunch: 1:00 PM • Ghadoli: 4:00 PM • Sangeet: 8:00 PM",
+      description: "Haldi, Gadholi & Sangeet Ceremony at Orchha River Stone Resort, MP"
     },
     {
       id: "tl2",
-      title: "Sangeet Ceremony",
-      date: "Nov 10, 2026",
-      time: "8:00 PM",
-      description: "An evening of music, dance, and joyous celebration."
-    },
-    {
-      id: "tl3",
       title: "Wedding Ceremony",
       date: "Nov 11, 2026",
-      time: "11:30 AM",
-      description: "Sacred Anand Karaj ceremony at Gurudwara Shri Guru Singh Sabha."
+      time: "Anand Karaj:- 11:30 AM, Lunch at Orchha:- 2 PM",
+      description: "Sacred Anand Karaj ceremony at Gurudwara Shri Guru Singh Sabha, Sipri Bazar, Jhansi, UP"
     }
   ],
   venue: {

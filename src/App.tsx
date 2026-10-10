@@ -44,6 +44,7 @@ function PublicView() {
   }, []);
 
   useEffect(() => {
+    document.title = "Jasmeet & Jaspreet | Sikh Wedding Invitation (Anand Karaj)";
     if (data?.ogImageUrl) {
       // Find or create og:image meta tag
       let ogImageMeta = document.querySelector('meta[property="og:image"]');

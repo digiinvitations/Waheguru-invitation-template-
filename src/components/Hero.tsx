@@ -81,7 +81,7 @@ export function Hero({ data, shouldPlayVideo = true, onVideoEnd }: HeroProps) {
             className="flex flex-col items-center w-full"
           >
             {/* Sacred Sikh Invocation / Background-Removed Religious Logo */}
-            <div className="flex flex-col items-center mb-4">
+            <div className="flex flex-col items-center mb-3">
               <IkOnkarSymbol
                 customLogoUrl={data.heroLogoUrl}
                 className="h-16 md:h-20 w-auto max-w-[200px] object-contain drop-shadow-md select-none pointer-events-none transition-transform duration-300"
@@ -97,7 +97,7 @@ export function Hero({ data, shouldPlayVideo = true, onVideoEnd }: HeroProps) {
                 Cordially Invited By
               </span>
               <span className="text-base sm:text-lg md:text-xl font-serif font-extrabold text-burgundy tracking-wide leading-snug drop-shadow-2xs">
-                Grandmother Sdn. Jasmer Kaur
+                {data.invitedBy || "Grandmother Sdn. Jasmer Kaur"}
               </span>
             </div>
 
